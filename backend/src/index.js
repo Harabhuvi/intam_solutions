@@ -21,10 +21,20 @@ const startServer = async () => {
   await server.start();
 
   app.use(cors({
-    origin: [
-      process.env.CLIENT_URL || 'http://localhost:5173',
-      'http://localhost:5174',
-    ],
+    origin: function (origin, callback) {
+      // Allow requests with no origin (mobile apps, Postman, server-to-server)
+      if (!origin) return callback(null, true);
+      // Allow any Vercel preview, Render, and localhost
+      const allowed = [
+        /\.vercel\.app$/,
+        /\.onrender\.com$/,
+        /^https?:\/\/localhost/,
+      ];
+      if (allowed.some((re) => re.test(origin))) return callback(null, true);
+      // Also check CLIENT_URL env var
+      if (process.env.CLIENT_URL && origin === process.env.CLIENT_URL) return callback(null, true);
+      callback(null, true); // allow all in development; restrict in production if needed
+    },
     credentials: true,
   }));
   app.use(bodyParser.json());

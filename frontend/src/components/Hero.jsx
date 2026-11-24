@@ -8,7 +8,7 @@ const slides = [
     heading: 'Protecting What',
     highlight: 'Matters Most',
     sub: 'Integrated security and automation solutions for homes, businesses and industries.',
-    image: '/hero-camera.png',
+    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80',
   },
   {
     id: 2,
@@ -16,42 +16,33 @@ const slides = [
     heading: 'Automate Your',
     highlight: 'World Smartly',
     sub: 'From home automation to enterprise-grade security systems — all under one roof.',
-    image: '/hero-automation.png',
+    image: 'https://images.unsplash.com/photo-1558002038-bb0237755b88?w=1200&q=80',
   },
 ];
 
 const features = [
-  { icon: '🛡️', title: 'Reliable Security', desc: 'Keep your people, property and assets safe' },
-  { icon: '⚙️', title: 'Smart Automation', desc: 'Simplify and control your environment' },
-  { icon: '🔧', title: 'Professional Support', desc: 'Installation, maintenance and AMC services' },
-  { icon: '🤝', title: 'Multiple Brands', desc: 'Trusted global and local brands' },
+  { icon: '🛡️', title: 'Reliable Security',       desc: 'Keep your people, property and assets safe' },
+  { icon: '⚙️', title: 'Smart Automation',         desc: 'Simplify and control your environment' },
+  { icon: '🔧', title: 'Professional Support',     desc: 'Installation, maintenance and AMC services' },
+  { icon: '🤝', title: 'Multiple Brands',           desc: 'Trusted global and local brands' },
   { icon: '🏢', title: 'Residential & Commercial', desc: 'Tailored solutions for every space' },
 ];
 
 const Hero = () => {
   const [current, setCurrent] = useState(0);
 
-  const goTo = (idx) => setCurrent(idx);
-
   return (
     <section className="hero">
       {/* ── Slider ─────────────────────────────────────── */}
-      <div
-        className="hero__slide"
-        style={{
-          backgroundImage: `linear-gradient(to right, rgba(10,20,60,0.85) 45%, rgba(10,20,60,0.1) 100%)`,
-        }}
-      >
-        {/* Background image */}
+      <div className="hero__slide">
         <div className="hero__bg-wrap">
           <img
             src={slides[current].image}
-            alt="Security Camera"
+            alt="Security"
             className="hero__bg-img"
           />
         </div>
 
-        {/* Content */}
         <div className="hero__content container">
           <span className="hero__badge">{slides[current].badge}</span>
           <h1 className="hero__heading">
@@ -61,12 +52,8 @@ const Hero = () => {
           </h1>
           <p className="hero__sub">{slides[current].sub}</p>
           <div className="hero__cta-group">
-            <a href="/products" className="btn btn--primary">
-              Explore Products →
-            </a>
-            <a href="/contact" className="btn btn--outline">
-              Request a Quote
-            </a>
+            <a href="/products" className="btn btn--primary">Explore Products →</a>
+            <a href="/contact"  className="btn btn--outline">Request a Quote</a>
           </div>
         </div>
 
@@ -76,7 +63,7 @@ const Hero = () => {
             <button
               key={i}
               className={`hero__dot ${i === current ? 'hero__dot--active' : ''}`}
-              onClick={() => goTo(i)}
+              onClick={() => setCurrent(i)}
               aria-label={`Slide ${i + 1}`}
             />
           ))}
