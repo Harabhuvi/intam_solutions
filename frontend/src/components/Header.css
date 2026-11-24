@@ -159,8 +159,7 @@
 @media (min-width: 640px) { .header__search-desktop { display: block; } }
 
 .header__search-mobile {
-  padding-bottom: .6rem;
-  padding-top: .1rem;
+  padding: .35rem 0 .75rem;
 }
 @media (min-width: 640px) { .header__search-mobile { display: none; } }
 

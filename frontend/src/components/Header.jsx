@@ -205,14 +205,12 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Mobile search bar */}
-      <div className="header__search-mobile container">
-        <SearchBar />
-      </div>
-
       {/* Mobile menu */}
       {menuOpen && (
         <nav className="header__mobile-menu container">
+          <div className="header__search-mobile">
+            <SearchBar />
+          </div>
           <ul>
             {navLinks.map((link) => (
               <li key={link.label}>

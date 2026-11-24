@@ -29,7 +29,6 @@ const Footer = () => {
             </p>
           </div>
           <div className="footer__cta-btns">
-            <a href="/contact" className="btn btn--primary">Request a Quote →</a>
             <a href="/contact" className="btn btn--outline-dark">Contact Us</a>
             <a
               href="https://wa.me/919845012345"
