@@ -16,6 +16,19 @@ export const GET_PRODUCTS_BY_CATEGORY = gql`
     productsByCategory(category: $category) { id name description category image price brand inStock }
   }
 `;
+export const ADD_PRODUCT = gql`
+  mutation AddProduct($name: String!, $description: String, $category: String!, $image: String, $brand: String, $price: Float, $inStock: Boolean) {
+    addProduct(name: $name, description: $description, category: $category, image: $image, brand: $brand, price: $price, inStock: $inStock) { id }
+  }
+`;
+export const UPDATE_PRODUCT = gql`
+  mutation UpdateProduct($id: ID!, $name: String!, $description: String, $category: String!, $image: String, $brand: String, $price: Float, $inStock: Boolean) {
+    updateProduct(id: $id, name: $name, description: $description, category: $category, image: $image, brand: $brand, price: $price, inStock: $inStock) { id }
+  }
+`;
+export const DELETE_PRODUCT = gql`
+  mutation DeleteProduct($id: ID!) { deleteProduct(id: $id) }
+`;
 export const SUBMIT_CONTACT = gql`
   mutation SubmitContact($name: String!, $email: String!, $phone: String, $message: String!) {
     submitContactQuery(name: $name, email: $email, phone: $phone, message: $message) { id status }

@@ -52,7 +52,22 @@ const resolvers = {
 
   Mutation: {
     /* ── Public product/category ────────────────────────── */
-    addProduct:  async (_, args) => await new Product(args).save(),
+    addProduct: async (_, args, { admin }) => {
+      requireAdmin(admin);
+      return await new Product(args).save();
+    },
+    updateProduct: async (_, { id, ...args }, { admin }) => {
+      requireAdmin(admin);
+      const product = await Product.findByIdAndUpdate(id, args, { new: true, runValidators: true });
+      if (!product) throw new Error('Product not found');
+      return product;
+    },
+    deleteProduct: async (_, { id }, { admin }) => {
+      requireAdmin(admin);
+      const product = await Product.findByIdAndDelete(id);
+      if (!product) throw new Error('Product not found');
+      return true;
+    },
     addCategory: async (_, args) => await new Category(args).save(),
 
     submitContactQuery: async (_, args) => {

@@ -8,6 +8,8 @@ import {
   DELETE_ENQUIRY,
 } from '../graphql/queries';
 import './AdminDashboard.css';
+import ProductManager from './ProductManager';
+import './ProductManager.css';
 
 /* ── Stat Card ───────────────────────────────────────── */
 const StatCard = ({ label, value, icon, color }) => (
@@ -124,6 +126,7 @@ const DetailModal = ({ enquiry, onClose, onStatusChange }) => {
    MAIN DASHBOARD
 ══════════════════════════════════════════════════════ */
 const AdminDashboard = ({ adminUser, onLogout }) => {
+  const [section, setSection] = useState('enquiries');
   const [filter, setFilter]   = useState('all');
   const [search, setSearch]   = useState('');
   const [selected, setSelected] = useState(null);
@@ -170,8 +173,11 @@ const AdminDashboard = ({ adminUser, onLogout }) => {
         </div>
 
         <nav className="adm__nav">
-          <button className="adm__nav-item adm__nav-item--active">
+          <button className={`adm__nav-item ${section === 'enquiries' ? 'adm__nav-item--active' : ''}`} onClick={() => setSection('enquiries')}>
             📋 Enquiries
+          </button>
+          <button className={`adm__nav-item ${section === 'products' ? 'adm__nav-item--active' : ''}`} onClick={() => setSection('products')}>
+            Products
           </button>
           <a href="/" className="adm__nav-item" target="_blank" rel="noreferrer">
             🌐 View Website
@@ -192,6 +198,7 @@ const AdminDashboard = ({ adminUser, onLogout }) => {
 
       {/* ── Main area ──────────────────────────────── */}
       <main className="adm__main">
+        {section === 'products' ? <ProductManager /> : <>
         {/* Top bar */}
         <div className="adm__topbar">
           <div>
@@ -277,6 +284,7 @@ const AdminDashboard = ({ adminUser, onLogout }) => {
         <p className="adm__count">
           Showing {enquiries.length} enquir{enquiries.length === 1 ? 'y' : 'ies'}
         </p>
+        </>}
       </main>
 
       {/* Detail Modal */}
