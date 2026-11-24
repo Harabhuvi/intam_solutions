@@ -2,8 +2,40 @@ const Product      = require('../models/Product');
 const Category     = require('../models/Category');
 const ContactQuery = require('../models/ContactQuery');
 const Admin        = require('../models/Admin');
+const FooterContent = require('../models/FooterContent');
 const { generateToken, requireAdmin } = require('../config/auth');
 const { sendEnquiryNotification, sendCustomerAutoReply } = require('../config/mailer');
+
+const defaultFooterContent = {
+  ctaTitle: 'Looking for the right security solution?',
+  ctaDescription: 'Tell us about your requirements. Our team can help you select suitable products and arrange a site visit or quotation.',
+  ctaContactLabel: 'Contact Us', ctaContactHref: '/contact',
+  whatsappLabel: 'WhatsApp', whatsappHref: 'https://wa.me/919845012345',
+  brandName: 'INTAM SOLUTIONS', tagline: 'Smart Security. Intelligent Automation.',
+  brandDescription: 'Providing top-tier electronic security and automation solutions across residential, commercial, and industrial spaces.',
+  quickLinksTitle: 'Quick Links',
+  quickLinks: [
+    { label: 'Home', href: '/' }, { label: 'Products', href: '/products' },
+    { label: 'Solutions', href: '/solutions' }, { label: 'Brands', href: '/brands' },
+    { label: 'Contact', href: '/contact' },
+  ],
+  servicesTitle: 'Services',
+  serviceLinks: [
+    { label: 'Projects', href: '/projects' }, { label: 'Services & AMC', href: '/services' },
+    { label: 'About Us', href: '/about' }, { label: 'Contact', href: '/contact' },
+  ],
+  contactTitle: 'Contact Us', phone: '+91 98450 12345', phoneHref: 'tel:+919845012345',
+  email: 'info@intamsolutions.com', emailHref: 'mailto:info@intamsolutions.com',
+  address: 'Coimbatore, Tamil Nadu',
+  socialLinks: [
+    { label: 'Facebook', href: '#facebook', icon: 'f' },
+    { label: 'LinkedIn', href: '#linkedin', icon: 'in' },
+    { label: 'YouTube', href: '#youtube', icon: '▶' },
+  ],
+  copyrightText: 'Intam Solutions. All rights reserved.',
+};
+
+const isSafeFooterHref = (href) => /^(https?:\/\/|mailto:|tel:|#|\/(?!\/))/.test(href || '');
 
 const resolvers = {
   Query: {
@@ -13,6 +45,10 @@ const resolvers = {
     productsByCategory:  async (_, { category }) => await Product.find({ category }),
     categories:          async () => await Category.find(),
     category:            async (_, { slug }) => await Category.findOne({ slug }),
+    footerContent: async () => {
+      const content = await FooterContent.findOne({ key: 'main' }).lean();
+      return content || defaultFooterContent;
+    },
 
     /* ── Admin-protected ────────────────────────────────── */
     contactQueries: async (_, { status, search }, { admin }) => {
@@ -69,6 +105,23 @@ const resolvers = {
       return true;
     },
     addCategory: async (_, args) => await new Category(args).save(),
+    updateFooterContent: async (_, { content }, { admin }) => {
+      requireAdmin(admin);
+      const linkValues = [
+        content.ctaContactHref, content.whatsappHref, content.phoneHref, content.emailHref,
+        ...(content.quickLinks || []).map((link) => link.href),
+        ...(content.serviceLinks || []).map((link) => link.href),
+        ...(content.socialLinks || []).map((link) => link.href),
+      ].filter(Boolean);
+      if (linkValues.some((href) => !isSafeFooterHref(href))) {
+        throw new Error('Footer links must use http(s), mailto, tel, #, or a site-relative URL');
+      }
+      return await FooterContent.findOneAndUpdate(
+        { key: 'main' },
+        { $set: content, $setOnInsert: { key: 'main' } },
+        { new: true, upsert: true, runValidators: true, setDefaultsOnInsert: true }
+      );
+    },
 
     submitContactQuery: async (_, args) => {
       const query = await new ContactQuery(args).save();

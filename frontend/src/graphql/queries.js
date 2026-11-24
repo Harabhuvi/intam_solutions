@@ -6,6 +6,26 @@ export const GET_CATEGORIES = gql`
     categories { id name slug description image icon }
   }
 `;
+export const GET_FOOTER_CONTENT = gql`
+  query GetFooterContent {
+    footerContent {
+      ctaTitle ctaDescription ctaContactLabel ctaContactHref whatsappLabel whatsappHref
+      brandName tagline brandDescription quickLinksTitle quickLinks { label href }
+      servicesTitle serviceLinks { label href } contactTitle phone phoneHref email emailHref
+      address socialLinks { label href icon } copyrightText
+    }
+  }
+`;
+export const UPDATE_FOOTER_CONTENT = gql`
+  mutation UpdateFooterContent($content: FooterContentInput!) {
+    updateFooterContent(content: $content) {
+      ctaTitle ctaDescription ctaContactLabel ctaContactHref whatsappLabel whatsappHref
+      brandName tagline brandDescription quickLinksTitle quickLinks { label href }
+      servicesTitle serviceLinks { label href } contactTitle phone phoneHref email emailHref
+      address socialLinks { label href icon } copyrightText
+    }
+  }
+`;
 export const GET_PRODUCTS = gql`
   query GetProducts {
     products { id name description category image brand price inStock }

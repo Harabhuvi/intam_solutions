@@ -1,0 +1,9 @@
+﻿.footer-admin { padding:1.25rem; border-radius:12px; background:#fff; box-shadow:0 1px 6px rgba(0,0,0,.07); }
+.footer-admin__header { margin-bottom:1rem; }.footer-admin__header h1 { margin:0 0 .25rem; color:#0f172a; font-size:1.25rem; }.footer-admin__header p { margin:0; color:#64748b; font-size:.84rem; }
+.footer-admin__grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.85rem; }
+.footer-admin__grid label { display:flex; flex-direction:column; gap:.35rem; color:#475569; font-size:.78rem; font-weight:700; }
+.footer-admin__grid input,.footer-admin__grid textarea { width:100%; box-sizing:border-box; border:1px solid #cbd5e1; border-radius:7px; padding:.6rem .7rem; color:#0f172a; background:#fff; font:400 .84rem/1.5 'Segoe UI',system-ui,sans-serif; }
+.footer-admin__grid textarea { resize:vertical; }.footer-admin__grid input:focus,.footer-admin__grid textarea:focus { outline:2px solid #bfdbfe; border-color:#3b82f6; }
+.footer-admin__wide { grid-column:1/-1; }.footer-admin__actions { display:flex; justify-content:flex-end; margin-top:1rem; }
+.footer-admin__status { padding:.7rem .85rem; margin:0 0 1rem; background:#ecfdf5; border-radius:7px; color:#047857; font-size:.84rem; }.footer-admin__error { color:#b91c1c; }
+@media(max-width:640px) { .footer-admin { padding:.85rem; }.footer-admin__grid { grid-template-columns:1fr; }.footer-admin__wide { grid-column:auto; }.footer-admin__actions .product-admin__primary { width:100%; } }

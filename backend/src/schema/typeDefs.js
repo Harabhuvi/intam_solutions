@@ -23,6 +23,58 @@ const typeDefs = gql`
     icon: String
   }
 
+  type FooterLink { label: String!, href: String! }
+  type FooterSocialLink { label: String!, href: String!, icon: String }
+  type FooterContent {
+    ctaTitle: String
+    ctaDescription: String
+    ctaContactLabel: String
+    ctaContactHref: String
+    whatsappLabel: String
+    whatsappHref: String
+    brandName: String
+    tagline: String
+    brandDescription: String
+    quickLinksTitle: String
+    quickLinks: [FooterLink!]!
+    servicesTitle: String
+    serviceLinks: [FooterLink!]!
+    contactTitle: String
+    phone: String
+    phoneHref: String
+    email: String
+    emailHref: String
+    address: String
+    socialLinks: [FooterSocialLink!]!
+    copyrightText: String
+  }
+
+  input FooterLinkInput { label: String!, href: String! }
+  input FooterSocialLinkInput { label: String!, href: String!, icon: String }
+  input FooterContentInput {
+    ctaTitle: String
+    ctaDescription: String
+    ctaContactLabel: String
+    ctaContactHref: String
+    whatsappLabel: String
+    whatsappHref: String
+    brandName: String
+    tagline: String
+    brandDescription: String
+    quickLinksTitle: String
+    quickLinks: [FooterLinkInput!]
+    servicesTitle: String
+    serviceLinks: [FooterLinkInput!]
+    contactTitle: String
+    phone: String
+    phoneHref: String
+    email: String
+    emailHref: String
+    address: String
+    socialLinks: [FooterSocialLinkInput!]
+    copyrightText: String
+  }
+
   type ContactQuery {
     id: ID!
     name: String!
@@ -64,6 +116,7 @@ const typeDefs = gql`
     productsByCategory(category: String!): [Product!]!
     categories: [Category!]!
     category(slug: String!): Category
+    footerContent: FooterContent!
 
     # Admin-protected
     contactQueries(status: String, search: String): [ContactQuery!]!
@@ -105,6 +158,8 @@ const typeDefs = gql`
       image: String
       icon: String
     ): Category!
+
+    updateFooterContent(content: FooterContentInput!): FooterContent!
 
     submitContactQuery(
       name: String!

@@ -10,6 +10,8 @@ import {
 import './AdminDashboard.css';
 import ProductManager from './ProductManager';
 import './ProductManager.css';
+import FooterManager from './FooterManager';
+import './FooterManager.css';
 
 /* ── Stat Card ───────────────────────────────────────── */
 const StatCard = ({ label, value, icon, color }) => (
@@ -179,6 +181,9 @@ const AdminDashboard = ({ adminUser, onLogout }) => {
           <button className={`adm__nav-item ${section === 'products' ? 'adm__nav-item--active' : ''}`} onClick={() => setSection('products')}>
             Products
           </button>
+          <button className={`adm__nav-item ${section === 'footer' ? 'adm__nav-item--active' : ''}`} onClick={() => setSection('footer')}>
+            Footer Content
+          </button>
           <a href="/" className="adm__nav-item" target="_blank" rel="noreferrer">
             🌐 View Website
           </a>
@@ -198,7 +203,7 @@ const AdminDashboard = ({ adminUser, onLogout }) => {
 
       {/* ── Main area ──────────────────────────────── */}
       <main className="adm__main">
-        {section === 'products' ? <ProductManager /> : <>
+        {section === 'products' ? <ProductManager /> : section === 'footer' ? <FooterManager /> : <>
         {/* Top bar */}
         <div className="adm__topbar">
           <div>

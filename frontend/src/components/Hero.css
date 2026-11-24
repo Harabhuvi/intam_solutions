@@ -141,9 +141,7 @@
 }
 @media (max-width: 479px) {
   .hero__feature:last-child:nth-child(odd) {
-    grid-column: 1 / -1;
-    justify-self: center;
-    width: min(100%, 220px);
+    grid-column: 1;
   }
 }
 @media (min-width: 480px) { .hero__features-inner { grid-template-columns: repeat(3, 1fr); } }

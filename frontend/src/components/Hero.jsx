@@ -8,7 +8,8 @@ const slides = [
     heading: 'Protecting What',
     highlight: 'Matters Most',
     sub: 'Integrated security and automation solutions for homes, businesses and industries.',
-    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80',
+    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=960&q=65',
+    imageSrcSet: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=480&q=65 480w, https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=768&q=65 768w, https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=1200&q=65 1200w, https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=1600&q=65 1600w',
   },
   {
     id: 2,
@@ -16,7 +17,8 @@ const slides = [
     heading: 'Automate Your',
     highlight: 'World Smartly',
     sub: 'From home automation to enterprise-grade security systems — all under one roof.',
-    image: 'https://images.unsplash.com/photo-1558002038-bb0237755b88?w=1200&q=80',
+    image: 'https://images.unsplash.com/photo-1558002038-bb0237755b88?auto=format&fit=crop&w=960&q=65',
+    imageSrcSet: 'https://images.unsplash.com/photo-1558002038-bb0237755b88?auto=format&fit=crop&w=480&q=65 480w, https://images.unsplash.com/photo-1558002038-bb0237755b88?auto=format&fit=crop&w=768&q=65 768w, https://images.unsplash.com/photo-1558002038-bb0237755b88?auto=format&fit=crop&w=1200&q=65 1200w, https://images.unsplash.com/photo-1558002038-bb0237755b88?auto=format&fit=crop&w=1600&q=65 1600w',
   },
 ];
 
@@ -38,8 +40,12 @@ const Hero = () => {
         <div className="hero__bg-wrap">
           <img
             src={slides[current].image}
+            srcSet={slides[current].imageSrcSet}
+            sizes="100vw"
             alt="Security"
             className="hero__bg-img"
+            loading={current === 0 ? 'eager' : 'lazy'}
+            fetchPriority={current === 0 ? 'high' : 'auto'}
           />
         </div>
 
