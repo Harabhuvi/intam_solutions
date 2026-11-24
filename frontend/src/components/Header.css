@@ -154,22 +154,151 @@
   .header__nav-link { padding: .6rem .85rem; font-size: .86rem; }
 }
 
-/* ── Actions (search + hamburger) ───────────────────── */
-.header__actions { display: flex; align-items: center; gap: .4rem; flex-shrink: 0; }
+/* ── Search bar ───────────────────────────────────────── */
+.header__search-desktop { display: none; }
+@media (min-width: 640px) { .header__search-desktop { display: block; } }
 
-.header__search-btn {
+.header__search-mobile {
+  padding-bottom: .6rem;
+  padding-top: .1rem;
+}
+@media (min-width: 640px) { .header__search-mobile { display: none; } }
+
+.search-bar {
+  position: relative;
+  width: 100%;
+}
+@media (min-width: 640px) { .search-bar { width: 220px; } }
+@media (min-width: 1024px){ .search-bar { width: 280px; } }
+
+.search-bar__form {
+  display: flex;
+  align-items: center;
+  background: var(--gray-100);
+  border: 1.5px solid var(--gray-200);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: border-color .2s, box-shadow .2s;
+}
+.search-bar__form:focus-within {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(37,99,235,.1);
+  background: #fff;
+}
+.search-bar__input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  padding: .5rem .7rem;
+  font-size: .82rem;
+  color: #111827;
+  min-width: 0;
+}
+.search-bar__input::placeholder { color: #9ca3af; }
+/* hide browser's native clear button */
+.search-bar__input::-webkit-search-cancel-button { display: none; }
+
+.search-bar__btn {
   background: none;
   border: none;
-  font-size: 1.05rem;
+  padding: .4rem .6rem;
   cursor: pointer;
-  padding: .4rem .5rem;
-  border-radius: var(--radius);
-  color: var(--navy);
-  transition: background var(--transition);
-  display: none; /* show on tablet+ */
+  font-size: .95rem;
+  color: var(--gray-600);
+  transition: color .15s;
+  flex-shrink: 0;
 }
-@media (min-width: 640px) { .header__search-btn { display: flex; } }
-.header__search-btn:hover { background: var(--gray-100); }
+.search-bar__btn:hover { color: var(--blue); }
+
+/* Dropdown */
+.search-bar__dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0; right: 0;
+  background: #fff;
+  border: 1px solid var(--gray-200);
+  border-radius: 10px;
+  box-shadow: 0 10px 32px rgba(0,0,0,.14);
+  z-index: 999;
+  list-style: none;
+  overflow: hidden;
+  animation: dropDown .15s ease;
+}
+@keyframes dropDown {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.search-bar__item {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  padding: .6rem .8rem;
+  cursor: pointer;
+  transition: background .12s;
+  border-bottom: 1px solid #f1f5f9;
+}
+.search-bar__item:hover { background: var(--blue-light); }
+
+.search-bar__thumb {
+  width: 38px; height: 38px;
+  border-radius: 6px;
+  object-fit: cover;
+  background: var(--gray-100);
+  flex-shrink: 0;
+}
+.search-bar__item-info {
+  display: flex;
+  flex-direction: column;
+  gap: .1rem;
+  min-width: 0;
+  flex: 1;
+}
+.search-bar__item-name {
+  font-size: .82rem;
+  font-weight: 700;
+  color: #111827;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.search-bar__item-meta {
+  font-size: .7rem;
+  color: var(--gray-400);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.search-bar__item-stock { font-size: .8rem; flex-shrink: 0; }
+.search-bar__item-stock--out { opacity: .6; }
+
+.search-bar__see-all {
+  padding: .55rem .8rem;
+  font-size: .78rem;
+  color: var(--blue);
+  cursor: pointer;
+  text-align: center;
+  background: var(--gray-50);
+  transition: background .12s;
+}
+.search-bar__see-all:hover { background: var(--blue-light); }
+
+.search-bar__no-results {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0; right: 0;
+  background: #fff;
+  border: 1px solid var(--gray-200);
+  border-radius: 10px;
+  padding: .9rem;
+  font-size: .82rem;
+  color: var(--gray-600);
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(0,0,0,.1);
+  z-index: 999;
+}
+
 
 .header__hamburger {
   display: flex;

@@ -8,6 +8,7 @@ import Hero              from './components/Hero';
 import ProductCategories from './components/ProductCategories';
 import Footer            from './components/Footer';
 import ContactPage       from './components/ContactPage';
+import ProductsPage      from './components/ProductsPage';
 
 /* Admin */
 import AdminApp from './admin/AdminApp';
@@ -32,10 +33,12 @@ function App() {
     <ApolloProvider client={client}>
       <BrowserRouter>
         <Routes>
-          <Route path="/"        element={<HomePage />} />
-          <Route path="/contact" element={<ContactPage />} />
-          <Route path="/admin"   element={<AdminApp />} />
-          <Route path="/admin/*" element={<AdminApp />} />
+          <Route path="/"           element={<HomePage />} />
+          <Route path="/products"   element={<ProductsPage />} />
+          <Route path="/products/:slug" element={<ProductsPage />} />
+          <Route path="/contact"    element={<ContactPage />} />
+          <Route path="/admin"      element={<AdminApp />} />
+          <Route path="/admin/*"    element={<AdminApp />} />
         </Routes>
       </BrowserRouter>
     </ApolloProvider>

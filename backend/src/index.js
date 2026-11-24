@@ -7,13 +7,15 @@ const bodyParser = require('body-parser');
 
 const connectDB   = require('./config/db');
 const seedAdmin   = require('./config/seedAdmin');
+const seedProducts = require('./config/seedProducts');
 const typeDefs    = require('./schema/typeDefs');
 const resolvers   = require('./resolvers/resolvers');
 const { getAdminFromToken } = require('./config/auth');
 
 const startServer = async () => {
   await connectDB();
-  await seedAdmin();         // create default admin if DB is empty
+  await seedAdmin();
+  await seedProducts();
 
   const app = express();
 
