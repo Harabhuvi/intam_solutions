@@ -23,7 +23,7 @@ const FALLBACK_CATEGORIES = [
   {
     id: '4', slug: 'intercoms',
     name: 'Video Door Phones & Intercoms',
-    image: 'https://images.unsplash.com/photo-1558002038-bb0237755b88?w=400&q=75',
+    image: 'https://media.istockphoto.com/id/184857175/photo/intercom.jpg?s=1024x1024&w=is&k=20&c=SrtCYDxohv5Z06jKl3JNuNjDfbqiO3XoTXEsEMs5_Hw=',
   },
   {
     id: '5', slug: 'automation',
