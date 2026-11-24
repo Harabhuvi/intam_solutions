@@ -108,7 +108,6 @@ const SearchBar = () => {
                 <span className="search-bar__item-name">{p.name}</span>
                 <span className="search-bar__item-meta">
                   {p.brand} · {p.category}
-                  {p.price && ` · ₹${p.price.toLocaleString('en-IN')}`}
                 </span>
               </div>
               <span className={`search-bar__item-stock ${p.inStock ? '' : 'search-bar__item-stock--out'}`}>

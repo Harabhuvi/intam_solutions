@@ -16,18 +16,12 @@ const ProductCard = ({ product, onSelect }) => (
         className="pc-card__img"
         loading="lazy"
       />
-      {!product.inStock && (
-        <span className="pc-card__oos">Out of Stock</span>
-      )}
     </div>
     <div className="pc-card__body">
       <span className="pc-card__brand">{product.brand}</span>
       <h3 className="pc-card__name">{product.name}</h3>
       <p className="pc-card__desc">{product.description?.slice(0, 90)}…</p>
       <div className="pc-card__footer">
-        {product.price && (
-          <span className="pc-card__price">₹{product.price.toLocaleString('en-IN')}</span>
-        )}
         <button className="pc-card__btn">View Details →</button>
       </div>
     </div>
@@ -53,15 +47,9 @@ const ProductModal = ({ product, onClose }) => {
           <div className="pm__info">
             <span className="pm__brand">{product.brand}</span>
             <h2 className="pm__name">{product.name}</h2>
-            {product.price && (
-              <p className="pm__price">₹{product.price.toLocaleString('en-IN')}</p>
-            )}
             <p className="pm__desc">{product.description}</p>
             <div className="pm__tags">
               <span className="pm__tag">📦 {product.category}</span>
-              <span className={`pm__tag pm__tag--${product.inStock ? 'green' : 'red'}`}>
-                {product.inStock ? '✅ In Stock' : '❌ Out of Stock'}
-              </span>
             </div>
             <div className="pm__actions">
               <a href="/contact" className="btn btn--primary">Get Quote →</a>
