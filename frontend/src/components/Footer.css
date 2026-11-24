@@ -1,0 +1,206 @@
+/* ═══════════════════════════════════════════════════════
+   FOOTER  —  Mobile-first
+═══════════════════════════════════════════════════════ */
+
+.footer { background: #111827; color: #d1d5db; }
+
+/* ── CTA Banner ───────────────────────────────────────── */
+.footer__cta {
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+  padding: 1.8rem 0;
+}
+@media (min-width: 768px) { .footer__cta { padding: 2.2rem 0; } }
+
+.footer__cta-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+@media (min-width: 768px) {
+  .footer__cta-inner {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+}
+
+.footer__cta-heading {
+  font-size: clamp(1rem, 2.5vw, 1.15rem);
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: .3rem;
+}
+.footer__cta-sub {
+  font-size: .82rem;
+  color: #bfdbfe;
+  line-height: 1.55;
+  max-width: 460px;
+}
+
+.footer__cta-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .65rem;
+  flex-shrink: 0;
+}
+
+/* ── Main Grid ────────────────────────────────────────── */
+.footer__main {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  padding: 2.5rem 1rem 2rem;
+}
+
+/* 2-col tablet */
+@media (min-width: 580px) {
+  .footer__main {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem 2.5rem;
+    padding: 3rem 1.5rem 2rem;
+  }
+  .footer__col--brand { grid-column: 1 / -1; }
+}
+
+/* 4-col desktop */
+@media (min-width: 1024px) {
+  .footer__main {
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    padding: 3.5rem 2rem 2.5rem;
+    gap: 2.5rem;
+  }
+  .footer__col--brand { grid-column: auto; }
+}
+
+/* ── Brand Column ─────────────────────────────────────── */
+.footer__logo-link {
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+  margin-bottom: .9rem;
+}
+.footer__logo { height: 40px; width: auto; }
+@media (min-width: 768px) { .footer__logo { height: 44px; } }
+
+.footer__brand-name {
+  display: block;
+  font-size: .88rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 1px;
+}
+.footer__brand-tag {
+  display: block;
+  font-size: .62rem;
+  color: var(--gray-400);
+  margin-top: 2px;
+}
+.footer__brand-desc {
+  font-size: .8rem;
+  color: var(--gray-400);
+  line-height: 1.65;
+}
+
+/* ── Col title ────────────────────────────────────────── */
+.footer__col-title {
+  font-size: .82rem;
+  font-weight: 700;
+  color: #f9fafb;
+  margin-bottom: .9rem;
+  text-transform: uppercase;
+  letter-spacing: .6px;
+}
+
+/* ── Links ────────────────────────────────────────────── */
+.footer__links {
+  display: flex;
+  flex-direction: column;
+  gap: .45rem;
+}
+.footer__links a {
+  color: var(--gray-400);
+  font-size: .84rem;
+  transition: color var(--transition);
+}
+.footer__links a:hover { color: #93c5fd; }
+
+/* ── Contact List ─────────────────────────────────────── */
+.footer__contact-list {
+  display: flex;
+  flex-direction: column;
+  gap: .55rem;
+  margin-bottom: 1rem;
+}
+.footer__contact-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: .4rem;
+  font-size: .82rem;
+  color: var(--gray-400);
+}
+.footer__contact-list a {
+  color: var(--gray-400);
+  transition: color var(--transition);
+}
+.footer__contact-list a:hover { color: #93c5fd; }
+
+/* ── Social ───────────────────────────────────────────── */
+.footer__social { display: flex; gap: .5rem; }
+
+.footer__social-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px; height: 34px;
+  border-radius: var(--radius);
+  background: #1f2937;
+  color: #d1d5db;
+  font-size: .75rem;
+  font-weight: 700;
+  transition: background var(--transition), color var(--transition), transform var(--transition);
+}
+.footer__social-icon:hover {
+  background: var(--blue);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+/* ── Contact Form ─────────────────────────────────────── */
+.footer__form {
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+}
+.footer__form input,
+.footer__form textarea {
+  background: #1f2937;
+  border: 1px solid #374151;
+  border-radius: var(--radius);
+  padding: .55rem .8rem;
+  color: #f3f4f6;
+  font-size: .83rem;
+  font-family: inherit;
+  outline: none;
+  resize: vertical;
+  transition: border-color var(--transition);
+  width: 100%;
+}
+.footer__form input::placeholder,
+.footer__form textarea::placeholder { color: #6b7280; }
+.footer__form input:focus,
+.footer__form textarea:focus { border-color: #3b82f6; }
+
+.footer__form-success {
+  color: #34d399;
+  font-size: .88rem;
+}
+
+/* ── Bottom Bar ───────────────────────────────────────── */
+.footer__bottom {
+  border-top: 1px solid #1f2937;
+  padding: 1rem 0;
+  text-align: center;
+  font-size: .76rem;
+  color: #6b7280;
+}
