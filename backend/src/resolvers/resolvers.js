@@ -3,6 +3,7 @@ const Category     = require('../models/Category');
 const ContactQuery = require('../models/ContactQuery');
 const Admin        = require('../models/Admin');
 const { generateToken, requireAdmin } = require('../config/auth');
+const { sendEnquiryNotification, sendCustomerAutoReply } = require('../config/mailer');
 
 const resolvers = {
   Query: {
@@ -54,7 +55,15 @@ const resolvers = {
     addProduct:  async (_, args) => await new Product(args).save(),
     addCategory: async (_, args) => await new Category(args).save(),
 
-    submitContactQuery: async (_, args) => await new ContactQuery(args).save(),
+    submitContactQuery: async (_, args) => {
+      const query = await new ContactQuery(args).save();
+      // Send emails in background (don't block the GraphQL response)
+      Promise.all([
+        sendEnquiryNotification(args),
+        sendCustomerAutoReply(args),
+      ]).catch((err) => console.error('Email error:', err.message));
+      return query;
+    },
 
     /* ── Admin Auth ─────────────────────────────────────── */
     adminLogin: async (_, { email, password }) => {

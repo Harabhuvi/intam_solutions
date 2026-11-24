@@ -1,9 +1,5 @@
 const Admin = require('../models/Admin');
 
-/**
- * Seeds one default admin if none exists yet.
- * Credentials come from .env → ADMIN_DEFAULT_EMAIL / ADMIN_DEFAULT_PASSWORD
- */
 const seedAdmin = async () => {
   const count = await Admin.countDocuments();
   if (count > 0) return;
