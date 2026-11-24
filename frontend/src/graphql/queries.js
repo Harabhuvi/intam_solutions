@@ -13,7 +13,7 @@ export const GET_PRODUCTS = gql`
 `;
 export const GET_PRODUCTS_BY_CATEGORY = gql`
   query GetProductsByCategory($category: String!) {
-    productsByCategory(category: $category) { id name description image price brand }
+    productsByCategory(category: $category) { id name description category image price brand inStock }
   }
 `;
 export const SUBMIT_CONTACT = gql`

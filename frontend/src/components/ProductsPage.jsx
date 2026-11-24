@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@apollo/client';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { GET_CATEGORIES, GET_PRODUCTS_BY_CATEGORY, GET_PRODUCTS } from '../graphql/queries';
 import Header from './Header';
 import Footer from './Footer';
@@ -68,9 +68,11 @@ const ProductModal = ({ product, onClose }) => {
 ══════════════════════════════════════════════════════ */
 const ProductsPage = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { slug } = useParams();
   const urlQ = new URLSearchParams(location.search).get('q') || '';
 
-  const [activeSlug, setActiveSlug] = useState('all');
+  const [activeSlug, setActiveSlug] = useState(slug || 'all');
   const [search, setSearch]         = useState(urlQ);
   const [selected, setSelected]     = useState(null);
 
@@ -79,6 +81,16 @@ const ProductsPage = () => {
     const q = new URLSearchParams(location.search).get('q') || '';
     setSearch(q);
   }, [location.search]);
+
+  /* Keep the selected category in sync with /products/:slug links. */
+  useEffect(() => {
+    setActiveSlug(slug || 'all');
+  }, [slug]);
+
+  const selectCategory = (categorySlug) => {
+    setActiveSlug(categorySlug);
+    navigate(categorySlug === 'all' ? '/products' : `/products/${categorySlug}`);
+  };
 
   const { data: catData } = useQuery(GET_CATEGORIES);
   const categories = catData?.categories || [];
@@ -133,7 +145,7 @@ const ProductsPage = () => {
               <li>
                 <button
                   className={`pp__cat-btn ${activeSlug === 'all' ? 'pp__cat-btn--active' : ''}`}
-                  onClick={() => setActiveSlug('all')}
+                  onClick={() => selectCategory('all')}
                 >
                   🗂 All Products
                 </button>
@@ -142,7 +154,7 @@ const ProductsPage = () => {
                 <li key={cat.id}>
                   <button
                     className={`pp__cat-btn ${activeSlug === cat.slug ? 'pp__cat-btn--active' : ''}`}
-                    onClick={() => setActiveSlug(cat.slug)}
+                    onClick={() => selectCategory(cat.slug)}
                   >
                     {cat.icon} {cat.name}
                   </button>
