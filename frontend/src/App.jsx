@@ -9,6 +9,7 @@ import ProductCategories from './components/ProductCategories';
 import Footer            from './components/Footer';
 import ContactPage       from './components/ContactPage';
 import ProductsPage      from './components/ProductsPage';
+import { BrandsPage, ProjectsPage, ServicesPage, SolutionsPage } from './components/InfoPages';
 
 /* Admin */
 import AdminApp from './admin/AdminApp';
@@ -36,6 +37,10 @@ function App() {
           <Route path="/"           element={<HomePage />} />
           <Route path="/products"   element={<ProductsPage />} />
           <Route path="/products/:slug" element={<ProductsPage />} />
+          <Route path="/solutions/*" element={<SolutionsPage />} />
+          <Route path="/brands" element={<BrandsPage />} />
+          <Route path="/projects/*" element={<ProjectsPage />} />
+          <Route path="/services/*" element={<ServicesPage />} />
           <Route path="/contact"    element={<ContactPage />} />
           <Route path="/admin"      element={<AdminApp />} />
           <Route path="/admin/*"    element={<AdminApp />} />
