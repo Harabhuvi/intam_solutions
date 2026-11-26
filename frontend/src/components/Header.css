@@ -1,7 +1,4 @@
-/* ═══════════════════════════════════════════════════════
-   HEADER  —  Mobile-first
-   Breakpoints: mobile(<640) → tablet(640–1023) → desktop(1024+)
-═══════════════════════════════════════════════════════ */
+﻿
 
 .header {
   position: sticky;
@@ -11,7 +8,6 @@
   box-shadow: var(--shadow-sm);
 }
 
-/* ── Top Bar ─────────────────────────────────────────── */
 .header__topbar { background: #0f172a; }
 
 .header__topbar-inner {
@@ -33,10 +29,8 @@
 .header__topbar-link:hover { color: #fff; }
 .header__topbar-link--whatsapp { color: #4ade80; }
 
-/* hide topbar on small phones */
 @media (max-width: 479px) { .header__topbar { display: none; } }
 
-/* ── Main row ────────────────────────────────────────── */
 .header__main {
   display: flex;
   align-items: center;
@@ -46,7 +40,6 @@
 }
 @media (min-width: 1024px) { .header__main { padding: .6rem 2rem; } }
 
-/* ── Logo ────────────────────────────────────────────── */
 .header__logo {
   display: flex;
   align-items: center;
@@ -87,7 +80,6 @@
 }
 @media (min-width: 480px) { .header__logo-tagline { display: block; } }
 
-/* ── Desktop Nav ─────────────────────────────────────── */
 .header__nav { display: none; }
 
 @media (min-width: 1024px) {
@@ -117,7 +109,7 @@
   }
   .header__nav-arrow { margin-left: 2px; font-size: .68rem; }
 
-  /* Dropdown */
+
   .header__dropdown {
     position: absolute;
     top: calc(100% + 4px);
@@ -149,12 +141,10 @@
   }
 }
 
-/* ── Large desktop — wider nav text ─────────────────── */
 @media (min-width: 1200px) {
   .header__nav-link { padding: .6rem .85rem; font-size: .86rem; }
 }
 
-/* ── Search bar ───────────────────────────────────────── */
 .header__search-desktop { display: none; }
 @media (min-width: 640px) { .header__search-desktop { display: block; } }
 
@@ -195,7 +185,7 @@
   min-width: 0;
 }
 .search-bar__input::placeholder { color: #9ca3af; }
-/* hide browser's native clear button */
+
 .search-bar__input::-webkit-search-cancel-button { display: none; }
 
 .search-bar__btn {
@@ -210,7 +200,6 @@
 }
 .search-bar__btn:hover { color: var(--blue); }
 
-/* Dropdown */
 .search-bar__dropdown {
   position: absolute;
   top: calc(100% + 6px);
@@ -298,7 +287,6 @@
   z-index: 999;
 }
 
-
 .header__hamburger {
   display: flex;
   align-items: center;
@@ -317,7 +305,6 @@
 
 @media (min-width: 1024px) { .header__hamburger { display: none; } }
 
-/* ── Mobile / Tablet menu ────────────────────────────── */
 .header__mobile-menu {
   border-top: 1px solid var(--gray-200);
   background: #fff;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { SUBMIT_CONTACT } from '../graphql/queries';
 import Header from './Header';
@@ -29,7 +29,7 @@ const ContactPage = () => {
       <Header />
       <main className="contact-page section">
         <div className="container">
-          {/* Page heading */}
+          {}
           <div className="cp__header">
             <h1 className="cp__title">Contact Us</h1>
             <p className="cp__sub">
@@ -38,7 +38,7 @@ const ContactPage = () => {
           </div>
 
           <div className="cp__grid">
-            {/* ── Contact Info Cards ─────────────────────── */}
+            {}
             <div className="cp__info">
               <div className="cp__info-card">
                 <span className="cp__info-icon">📞</span>
@@ -79,7 +79,7 @@ const ContactPage = () => {
               </div>
             </div>
 
-            {/* ── Contact Form ───────────────────────────── */}
+            {}
             <div className="cp__form-wrap">
               <h2 className="cp__form-heading">Send Us a Message</h2>
 

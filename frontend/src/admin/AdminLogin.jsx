@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { ADMIN_LOGIN } from '../graphql/queries';
 import './AdminLogin.css';
@@ -30,7 +30,7 @@ const AdminLogin = ({ onLogin }) => {
   return (
     <div className="al-wrap">
       <div className="al-card">
-        {/* Logo */}
+        {}
         <div className="al-logo">
           <div className="al-logo__icon">🛡️</div>
           <div>

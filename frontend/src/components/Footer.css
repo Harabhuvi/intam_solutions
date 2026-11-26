@@ -1,10 +1,7 @@
-/* ═══════════════════════════════════════════════════════
-   FOOTER  —  Mobile-first
-═══════════════════════════════════════════════════════ */
+﻿
 
 .footer { background: #111827; color: #d1d5db; }
 
-/* ── CTA Banner ───────────────────────────────────────── */
 .footer__cta {
   background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
   padding: 1.8rem 0;
@@ -45,7 +42,6 @@
   flex-shrink: 0;
 }
 
-/* ── Main Grid ────────────────────────────────────────── */
 .footer__main {
   display: grid;
   grid-template-columns: 1fr;
@@ -53,7 +49,6 @@
   padding: 2.5rem 1rem 2rem;
 }
 
-/* 2-col tablet */
 @media (min-width: 580px) {
   .footer__main {
     grid-template-columns: repeat(2, 1fr);
@@ -63,7 +58,6 @@
   .footer__col--brand { grid-column: 1 / -1; }
 }
 
-/* 4-col desktop */
 @media (min-width: 1024px) {
   .footer__main {
     grid-template-columns: 1.5fr 1fr 1fr 1fr;
@@ -73,7 +67,6 @@
   .footer__col--brand { grid-column: auto; }
 }
 
-/* ── Brand Column ─────────────────────────────────────── */
 .footer__logo-link {
   display: inline-flex;
   align-items: center;
@@ -102,7 +95,6 @@
   line-height: 1.65;
 }
 
-/* ── Col title ────────────────────────────────────────── */
 .footer__col-title {
   font-size: .82rem;
   font-weight: 700;
@@ -112,7 +104,6 @@
   letter-spacing: .6px;
 }
 
-/* ── Links ────────────────────────────────────────────── */
 .footer__links {
   display: flex;
   flex-direction: column;
@@ -125,7 +116,6 @@
 }
 .footer__links a:hover { color: #93c5fd; }
 
-/* ── Contact List ─────────────────────────────────────── */
 .footer__contact-list {
   display: flex;
   flex-direction: column;
@@ -145,7 +135,6 @@
 }
 .footer__contact-list a:hover { color: #93c5fd; }
 
-/* ── Social ───────────────────────────────────────────── */
 .footer__social { display: flex; gap: .5rem; }
 
 .footer__social-icon {
@@ -166,7 +155,6 @@
   transform: translateY(-2px);
 }
 
-/* ── Contact Form ─────────────────────────────────────── */
 .footer__form {
   display: flex;
   flex-direction: column;
@@ -196,7 +184,6 @@
   font-size: .88rem;
 }
 
-/* ── Bottom Bar ───────────────────────────────────────── */
 .footer__bottom {
   border-top: 1px solid #1f2937;
   padding: 1rem 0;

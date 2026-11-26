@@ -1,4 +1,4 @@
-const Product      = require('../models/Product');
+﻿const Product      = require('../models/Product');
 const Category     = require('../models/Category');
 const ContactQuery = require('../models/ContactQuery');
 const Admin        = require('../models/Admin');
@@ -39,25 +39,31 @@ const isSafeFooterHref = (href) => /^(https?:\/\/|mailto:|tel:|#|\/(?!\/))/.test
 
 const resolvers = {
   Query: {
-    /* ── Public ─────────────────────────────────────────── */
-    products:            async () => await Product.find().sort({ createdAt: -1 }),
-    product:             async (_, { id }) => await Product.findById(id),
-    productsByCategory:  async (_, { category }) => await Product.find({ category }),
-    categories:          async () => await Category.find(),
-    category:            async (_, { slug }) => await Category.findOne({ slug }),
+
+    products:            async () => await Product.find().sort({ createdAt: -1 }).lean(),
+    product:             async (_, { id }) => await Product.findById(id).lean(),
+    productsByCategory:  async (_, { category }) => await Product.find({ category }).sort({ createdAt: -1 }).lean(),
+    categories:          async () => await Category.find().lean(),
+    category:            async (_, { slug }) => await Category.findOne({ slug }).lean(),
     footerContent: async () => {
       const content = await FooterContent.findOne({ key: 'main' }).lean();
       return content || defaultFooterContent;
     },
 
-    /* ── Admin-protected ────────────────────────────────── */
+
     contactQueries: async (_, { status, search }, { admin }) => {
       requireAdmin(admin);
       const filter = {};
       if (status && status !== 'all') filter.status = status;
-      if (search) {
-        const re = new RegExp(search, 'i');
-        filter.$or = [{ name: re }, { email: re }, { phone: re }, { message: re }];
+      if (search && search.trim()) {
+        const trimmed = search.trim();
+        const isShortExact = trimmed.length < 4 || /^\+?\d[\d\s\-]+$/.test(trimmed);
+        if (isShortExact) {
+          const re = new RegExp(`^${trimmed.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'i');
+          filter.$or = [{ name: re }, { email: re }, { phone: re }];
+        } else {
+          filter.$text = { $search: trimmed };
+        }
       }
       return await ContactQuery.find(filter).sort({ createdAt: -1 });
     },
@@ -87,7 +93,7 @@ const resolvers = {
   },
 
   Mutation: {
-    /* ── Public product/category ────────────────────────── */
+
     addProduct: async (_, args, { admin }) => {
       requireAdmin(admin);
       return await new Product(args).save();
@@ -133,7 +139,7 @@ const resolvers = {
       return query;
     },
 
-    /* ── Admin Auth ─────────────────────────────────────── */
+
     adminLogin: async (_, { email, password }) => {
       const admin = await Admin.findOne({ email: email.toLowerCase(), isActive: true });
       if (!admin) throw new Error('Invalid credentials');
@@ -144,7 +150,7 @@ const resolvers = {
       return { token: generateToken(admin), admin };
     },
 
-    /* ── Admin enquiry management ───────────────────────── */
+
     updateEnquiryStatus: async (_, { id, status }, { admin }) => {
       requireAdmin(admin);
       const valid = ['pending', 'resolved', 'in-progress'];

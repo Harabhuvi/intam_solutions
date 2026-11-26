@@ -1,9 +1,8 @@
-import React from 'react';
+﻿import React from 'react';
 import { useQuery } from '@apollo/client';
 import { GET_CATEGORIES } from '../graphql/queries';
 import './ProductCategories.css';
 
-/* Real Unsplash images for each category */
 const FALLBACK_CATEGORIES = [
   {
     id: '1', slug: 'cctv',

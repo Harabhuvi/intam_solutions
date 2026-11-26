@@ -1,16 +1,15 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import AdminLogin from './AdminLogin';
 import AdminDashboard from './AdminDashboard';
 
 const AdminApp = () => {
   const [adminUser, setAdminUser] = useState(null);
 
-  /* Restore session from localStorage on mount */
   useEffect(() => {
     const token = localStorage.getItem('adminToken');
     const user  = localStorage.getItem('adminUser');
     if (token && user) {
-      try { setAdminUser(JSON.parse(user)); } catch { /* ignore */ }
+      try { setAdminUser(JSON.parse(user)); } catch {  }
     }
   }, []);
 

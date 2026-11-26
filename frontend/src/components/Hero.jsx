@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import './Hero.css';
 
 const slides = [
@@ -35,7 +35,7 @@ const Hero = () => {
 
   return (
     <section className="hero">
-      {/* ── Slider ─────────────────────────────────────── */}
+      {}
       <div className="hero__slide">
         <div className="hero__bg-wrap">
           <img
@@ -63,7 +63,7 @@ const Hero = () => {
           </div>
         </div>
 
-        {/* Dots */}
+        {}
         <div className="hero__dots">
           {slides.map((_, i) => (
             <button
@@ -76,7 +76,7 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* ── Feature Strip ──────────────────────────────── */}
+      {}
       <div className="hero__features">
         <div className="hero__features-inner container">
           {features.map((f) => (

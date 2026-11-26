@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+﻿const mongoose = require('mongoose');
 
 const linkSchema = new mongoose.Schema(
   { label: { type: String, trim: true, required: true }, href: { type: String, trim: true, required: true } },

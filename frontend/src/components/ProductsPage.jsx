@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect, useMemo } from 'react';
 import { useQuery } from '@apollo/client';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { GET_CATEGORIES, GET_PRODUCTS_BY_CATEGORY, GET_PRODUCTS } from '../graphql/queries';
+import { useProductSearch } from '../graphql/useProductSearch';
 import Header from './Header';
 import Footer from './Footer';
 import './ProductsPage.css';
 
-/* ── Product Card ─────────────────────────────────────── */
 const ProductCard = ({ product, onSelect }) => (
   <div className="pc-card" onClick={() => onSelect(product)}>
     <div className="pc-card__img-wrap">
@@ -28,7 +28,6 @@ const ProductCard = ({ product, onSelect }) => (
   </div>
 );
 
-/* ── Product Detail Modal ─────────────────────────────── */
 const ProductModal = ({ product, onClose }) => {
   if (!product) return null;
   return (
@@ -63,9 +62,6 @@ const ProductModal = ({ product, onClose }) => {
   );
 };
 
-/* ══════════════════════════════════════════════════════
-   MAIN PAGE
-══════════════════════════════════════════════════════ */
 const ProductsPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -76,13 +72,16 @@ const ProductsPage = () => {
   const [search, setSearch]         = useState(urlQ);
   const [selected, setSelected]     = useState(null);
 
-  /* Sync search when URL param changes (from header search) */
+
+  const { search: searchFn, ready: searchReady } = useProductSearch();
+
+
   useEffect(() => {
     const q = new URLSearchParams(location.search).get('q') || '';
     setSearch(q);
   }, [location.search]);
 
-  /* Keep the selected category in sync with /products/:slug links. */
+
   useEffect(() => {
     setActiveSlug(slug || 'all');
   }, [slug]);
@@ -95,7 +94,7 @@ const ProductsPage = () => {
   const { data: catData } = useQuery(GET_CATEGORIES);
   const categories = catData?.categories || [];
 
-  /* Fetch by category or all */
+
   const { data: byCatData, loading: catLoading } = useQuery(
     GET_PRODUCTS_BY_CATEGORY,
     { variables: { category: activeSlug }, skip: activeSlug === 'all' }
@@ -109,23 +108,25 @@ const ProductsPage = () => {
     ? (allData?.products || [])
     : (byCatData?.productsByCategory || []);
 
-  /* Client-side search filter */
-  const products = search.trim()
-    ? rawProds.filter(p =>
-        p.name.toLowerCase().includes(search.toLowerCase()) ||
-        p.brand?.toLowerCase().includes(search.toLowerCase()) ||
-        p.description?.toLowerCase().includes(search.toLowerCase())
-      )
-    : rawProds;
 
-  /* Active category info */
+  const products = useMemo(() => {
+    const q = search.trim();
+    if (!q) return rawProds;
+    // searchFn queries the global inverted index → no linear scan
+    const hits = searchFn(q, rawProds.length); // returns up to rawProds.length results
+    // Intersect with rawProds so category filter + search compose correctly
+    const hitSet = new Set(hits.map(p => p.id));
+    return rawProds.filter(p => hitSet.has(p.id)); // O(n) render-time, not search-time
+  }, [search, rawProds, searchFn]);
+
+
   const activeCat = categories.find(c => c.slug === activeSlug);
 
   return (
     <>
       <Header />
       <main className="products-page">
-        {/* ── Page Banner ───────────────────────────────── */}
+        {}
         <div className="pp__banner">
           <div className="container">
             <h1 className="pp__banner-title">
@@ -138,7 +139,7 @@ const ProductsPage = () => {
         </div>
 
         <div className="container pp__layout">
-          {/* ── Sidebar ───────────────────────────────── */}
+          {}
           <aside className="pp__sidebar">
             <h3 className="pp__sidebar-title">Categories</h3>
             <ul className="pp__cat-list">
@@ -163,9 +164,9 @@ const ProductsPage = () => {
             </ul>
           </aside>
 
-          {/* ── Products area ─────────────────────────── */}
+          {}
           <div className="pp__main">
-            {/* Search bar */}
+            {}
             <div className="pp__toolbar">
               <p className="pp__count">
                 {loading ? 'Loading…' : `${products.length} product${products.length !== 1 ? 's' : ''} found`}
@@ -182,7 +183,7 @@ const ProductsPage = () => {
               </div>
             </div>
 
-            {/* Grid */}
+            {}
             {loading ? (
               <div className="pp__loading">
                 <div className="pp__spinner" />
@@ -206,7 +207,7 @@ const ProductsPage = () => {
 
       <Footer />
 
-      {/* Detail modal */}
+      {}
       <ProductModal product={selected} onClose={() => setSelected(null)} />
     </>
   );

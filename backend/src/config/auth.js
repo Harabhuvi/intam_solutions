@@ -1,8 +1,5 @@
-const jwt = require('jsonwebtoken');
+﻿const jwt = require('jsonwebtoken');
 
-/**
- * Generate a signed JWT for an admin user
- */
 const generateToken = (admin) =>
   jwt.sign(
     { id: admin._id, email: admin.email, role: admin.role },
@@ -10,9 +7,6 @@ const generateToken = (admin) =>
     { expiresIn: '7d' }
   );
 
-/**
- * Middleware: attach decoded admin to context if Authorization header present
- */
 const getAdminFromToken = (req) => {
   const auth = req?.headers?.authorization || '';
   if (!auth.startsWith('Bearer ')) return null;
@@ -23,9 +17,6 @@ const getAdminFromToken = (req) => {
   }
 };
 
-/**
- * Guard helper — throws if not authenticated
- */
 const requireAdmin = (admin) => {
   if (!admin) throw new Error('UNAUTHORIZED: Admin login required');
 };

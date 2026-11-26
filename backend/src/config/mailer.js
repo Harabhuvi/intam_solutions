@@ -1,15 +1,13 @@
-const nodemailer = require('nodemailer');
+﻿const nodemailer = require('nodemailer');
 
-/* ── Transporter ─────────────────────────────────────── */
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: process.env.SMTP_EMAIL,
-    pass: process.env.SMTP_APP_PASSWORD,   // 16-char Gmail App Password
+    pass: process.env.SMTP_APP_PASSWORD,
   },
 });
 
-/* ── Helper: send admin notification ─────────────────── */
 const sendEnquiryNotification = async ({ name, email, phone, message }) => {
   const adminEmail = process.env.NOTIFY_EMAIL || process.env.SMTP_EMAIL;
 
@@ -72,7 +70,6 @@ const sendEnquiryNotification = async ({ name, email, phone, message }) => {
   console.log(`📧 Enquiry notification sent to ${adminEmail}`);
 };
 
-/* ── Helper: send auto-reply to customer ─────────────── */
 const sendCustomerAutoReply = async ({ name, email }) => {
   const mailOptions = {
     from: `"Intam Solutions" <${process.env.SMTP_EMAIL}>`,

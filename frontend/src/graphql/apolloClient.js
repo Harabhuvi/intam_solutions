@@ -1,11 +1,10 @@
-import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink } from '@apollo/client';
+﻿import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 
 const httpLink = createHttpLink({
   uri: import.meta.env.VITE_GRAPHQL_URI || 'http://localhost:4000/graphql',
 });
 
-/* Attach JWT token from localStorage to every request */
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem('adminToken');
   return {

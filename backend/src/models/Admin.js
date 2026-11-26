@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+﻿const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 const adminSchema = new mongoose.Schema(
@@ -13,16 +13,16 @@ const adminSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-/* Hash password before save */
 adminSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
   this.password = await bcrypt.hash(this.password, 12);
   next();
 });
 
-/* Compare password helper */
 adminSchema.methods.matchPassword = async function (plain) {
   return bcrypt.compare(plain, this.password);
 };
+
+adminSchema.index({ email: 1, isActive: 1 });
 
 module.exports = mongoose.model('Admin', adminSchema);

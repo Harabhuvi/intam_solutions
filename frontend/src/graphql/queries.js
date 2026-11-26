@@ -1,6 +1,5 @@
-import { gql } from '@apollo/client';
+﻿import { gql } from '@apollo/client';
 
-/* ── Public queries ──────────────────────────────────── */
 export const GET_CATEGORIES = gql`
   query GetCategories {
     categories { id name slug description image icon }
@@ -55,7 +54,6 @@ export const SUBMIT_CONTACT = gql`
   }
 `;
 
-/* ── Admin Auth ───────────────────────────────────────── */
 export const ADMIN_LOGIN = gql`
   mutation AdminLogin($email: String!, $password: String!) {
     adminLogin(email: $email, password: $password) {
@@ -65,7 +63,6 @@ export const ADMIN_LOGIN = gql`
   }
 `;
 
-/* ── Admin Enquiries ──────────────────────────────────── */
 export const GET_ENQUIRIES = gql`
   query GetEnquiries($status: String, $search: String) {
     contactQueries(status: $status, search: $search) {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 import {
   GET_ENQUIRIES,
@@ -13,7 +13,6 @@ import './ProductManager.css';
 import FooterManager from './FooterManager';
 import './FooterManager.css';
 
-/* ── Stat Card ───────────────────────────────────────── */
 const StatCard = ({ label, value, icon, color }) => (
   <div className={`stat-card stat-card--${color}`}>
     <div className="stat-card__icon">{icon}</div>
@@ -24,7 +23,6 @@ const StatCard = ({ label, value, icon, color }) => (
   </div>
 );
 
-/* ── Status Badge ────────────────────────────────────── */
 const Badge = ({ status }) => (
   <span className={`badge badge--${status}`}>
     {status === 'pending'     ? '🕐 Pending'
@@ -34,7 +32,6 @@ const Badge = ({ status }) => (
   </span>
 );
 
-/* ── Enquiry Row ─────────────────────────────────────── */
 const EnquiryRow = ({ q, onStatusChange, onDelete, onView }) => (
   <tr className="enq-row">
     <td className="enq-row__info">
@@ -78,7 +75,6 @@ const EnquiryRow = ({ q, onStatusChange, onDelete, onView }) => (
   </tr>
 );
 
-/* ── Detail Modal ────────────────────────────────────── */
 const DetailModal = ({ enquiry, onClose, onStatusChange }) => {
   if (!enquiry) return null;
   return (
@@ -124,9 +120,6 @@ const DetailModal = ({ enquiry, onClose, onStatusChange }) => {
   );
 };
 
-/* ══════════════════════════════════════════════════════
-   MAIN DASHBOARD
-══════════════════════════════════════════════════════ */
 const AdminDashboard = ({ adminUser, onLogout }) => {
   const [section, setSection] = useState('enquiries');
   const [filter, setFilter]   = useState('all');
@@ -164,7 +157,7 @@ const AdminDashboard = ({ adminUser, onLogout }) => {
 
   return (
     <div className="adm">
-      {/* ── Sidebar ────────────────────────────────── */}
+      {}
       <aside className="adm__sidebar">
         <div className="adm__sidebar-logo">
           <span className="adm__sidebar-icon">🛡️</span>
@@ -201,10 +194,10 @@ const AdminDashboard = ({ adminUser, onLogout }) => {
         </div>
       </aside>
 
-      {/* ── Main area ──────────────────────────────── */}
+      {}
       <main className="adm__main">
         {section === 'products' ? <ProductManager /> : section === 'footer' ? <FooterManager /> : <>
-        {/* Top bar */}
+        {}
         <div className="adm__topbar">
           <div>
             <h1 className="adm__page-title">Customer Enquiries</h1>
@@ -215,7 +208,7 @@ const AdminDashboard = ({ adminUser, onLogout }) => {
           </button>
         </div>
 
-        {/* Stats */}
+        {}
         <div className="adm__stats">
           <StatCard label="Total Enquiries" value={stats?.total}     icon="📊" color="blue" />
           <StatCard label="Pending"          value={stats?.pending}   icon="🕐" color="yellow" />
@@ -223,7 +216,7 @@ const AdminDashboard = ({ adminUser, onLogout }) => {
           <StatCard label="Today"            value={stats?.todayCount}icon="📅" color="purple" />
         </div>
 
-        {/* Filter + Search bar */}
+        {}
         <div className="adm__toolbar">
           <div className="adm__filters">
             {['all', 'pending', 'in-progress', 'resolved'].map((f) => (
@@ -248,7 +241,7 @@ const AdminDashboard = ({ adminUser, onLogout }) => {
           </div>
         </div>
 
-        {/* Table */}
+        {}
         <div className="adm__table-wrap">
           {loading ? (
             <div className="adm__loading">
@@ -292,7 +285,7 @@ const AdminDashboard = ({ adminUser, onLogout }) => {
         </>}
       </main>
 
-      {/* Detail Modal */}
+      {}
       <DetailModal
         enquiry={selected}
         onClose={() => setSelected(null)}

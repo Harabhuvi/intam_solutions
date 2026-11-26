@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+﻿import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useProductSearch } from '../graphql/useProductSearch';
 import './Header.css';
@@ -22,7 +22,6 @@ const navLinks = [
   { label: 'Contact',     href: '/contact' },
 ];
 
-/* ── Search Bar with O(1) live dropdown ──────────────── */
 const SearchBar = () => {
   const [query, setQuery]       = useState('');
   const [results, setResults]   = useState([]);
@@ -32,7 +31,7 @@ const SearchBar = () => {
   const wrapRef  = useRef(null);
   const navigate = useNavigate();
 
-  /* Close dropdown when clicking outside */
+
   useEffect(() => {
     const handler = (e) => {
       if (wrapRef.current && !wrapRef.current.contains(e.target))
@@ -88,7 +87,7 @@ const SearchBar = () => {
         </button>
       </form>
 
-      {/* ── Live dropdown ─────────────────────────── */}
+      {}
       {open && results.length > 0 && (
         <ul className="search-bar__dropdown" role="listbox">
           {results.map((p) => (
@@ -128,14 +127,13 @@ const SearchBar = () => {
   );
 };
 
-/* ── Header ───────────────────────────────────────────── */
 const Header = () => {
   const [menuOpen, setMenuOpen]       = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
 
   return (
     <header className="header">
-      {/* Top Bar */}
+      {}
       <div className="header__topbar">
         <div className="header__topbar-inner container">
           <a href="tel:+919845012345" className="header__topbar-link">📞 +91 98450 12345</a>
@@ -144,9 +142,9 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Main Nav row */}
+      {}
       <div className="header__main container">
-        {/* Logo */}
+        {}
         <a href="/" className="header__logo">
           <svg className="header__logo-img" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
             <rect width="48" height="48" rx="10" fill="#1e3a8a"/>
@@ -160,7 +158,7 @@ const Header = () => {
           </div>
         </a>
 
-        {/* Desktop Nav */}
+        {}
         <nav className="header__nav" aria-label="Main navigation">
           <ul className="header__nav-list">
             {navLinks.map((link) => (
@@ -188,9 +186,9 @@ const Header = () => {
           </ul>
         </nav>
 
-        {/* Search + hamburger */}
+        {}
         <div className="header__actions">
-          {/* Full search bar on tablet+ */}
+          {}
           <div className="header__search-desktop">
             <SearchBar />
           </div>
@@ -205,7 +203,7 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Mobile menu */}
+      {}
       {menuOpen && (
         <nav className="header__mobile-menu container">
           <div className="header__search-mobile">

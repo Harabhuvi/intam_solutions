@@ -1,8 +1,7 @@
-import React from 'react';
+﻿import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ApolloProvider, client } from './graphql/apolloClient';
 
-/* Public pages */
 import Header            from './components/Header';
 import Hero              from './components/Hero';
 import ProductCategories from './components/ProductCategories';
@@ -11,12 +10,10 @@ import ContactPage       from './components/ContactPage';
 import ProductsPage      from './components/ProductsPage';
 import { BrandsPage, ProjectsPage, ServicesPage, SolutionsPage } from './components/InfoPages';
 
-/* Admin */
 import AdminApp from './admin/AdminApp';
 
 import './index.css';
 
-/* ── Public home page ─────────────────────────────────── */
 const HomePage = () => (
   <>
     <Header />
@@ -28,7 +25,6 @@ const HomePage = () => (
   </>
 );
 
-/* ── App with routing ─────────────────────────────────── */
 function App() {
   return (
     <ApolloProvider client={client}>

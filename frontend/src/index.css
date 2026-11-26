@@ -1,6 +1,4 @@
-/* ═══════════════════════════════════════════════════════
-   GLOBAL RESET & BASE  —  Mobile-first
-═══════════════════════════════════════════════════════ */
+﻿
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
@@ -39,7 +37,6 @@ img { display: block; max-width: 100%; height: auto; }
 a   { text-decoration: none; color: inherit; }
 ul  { list-style: none; }
 
-/* ── Container ───────────────────────────────────────── */
 .container {
   width: 100%;
   max-width: 1200px;
@@ -49,12 +46,10 @@ ul  { list-style: none; }
 @media (min-width: 640px)  { .container { padding: 0 1.5rem; } }
 @media (min-width: 1024px) { .container { padding: 0 2rem;   } }
 
-/* ── Section spacing ─────────────────────────────────── */
 .section { padding: 3rem 0; }
 @media (min-width: 768px)  { .section { padding: 4rem 0; } }
 @media (min-width: 1024px) { .section { padding: 5rem 0; } }
 
-/* ── Buttons ─────────────────────────────────────────── */
 .btn {
   display: inline-flex;
   align-items: center;

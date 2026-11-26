@@ -1,10 +1,7 @@
-/* ═══════════════════════════════════════════════════════
-   PRODUCTS PAGE  —  Mobile-first responsive
-═══════════════════════════════════════════════════════ */
+﻿
 
 .products-page { background: var(--gray-50); min-height: 70vh; }
 
-/* ── Banner ───────────────────────────────────────────── */
 .pp__banner {
   background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
   padding: 2.5rem 0 2rem;
@@ -25,7 +22,6 @@
   margin: 0;
 }
 
-/* ── Layout: sidebar + main ───────────────────────────── */
 .pp__layout {
   display: grid;
   grid-template-columns: 1fr;
@@ -42,7 +38,6 @@
 }
 @media (min-width: 1024px) { .pp__layout { grid-template-columns: 240px 1fr; } }
 
-/* ── Sidebar ──────────────────────────────────────────── */
 .pp__sidebar {
   background: #fff;
   border: 1px solid var(--gray-200);
@@ -88,7 +83,6 @@
 .pp__cat-btn--active { background: var(--blue); color: #fff; }
 .pp__cat-btn--active:hover { background: var(--blue-dark); }
 
-/* ── Main area ────────────────────────────────────────── */
 .pp__toolbar {
   display: flex;
   align-items: center;
@@ -123,7 +117,6 @@
 }
 @media (min-width: 480px) { .pp__search { min-width: 220px; } }
 
-/* ── Product Grid ─────────────────────────────────────── */
 .pp__grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -133,7 +126,6 @@
 @media (min-width: 900px) { .pp__grid { grid-template-columns: repeat(3, 1fr); gap: 1.3rem; } }
 @media (min-width: 1200px){ .pp__grid { grid-template-columns: repeat(4, 1fr); } }
 
-/* ── Product Card ─────────────────────────────────────── */
 .pc-card {
   background: #fff;
   border: 1px solid var(--gray-200);
@@ -228,7 +220,6 @@
 }
 .pc-card__btn:hover { background: #dbeafe; }
 
-/* ── Loading / Empty ──────────────────────────────────── */
 .pp__loading {
   display: flex;
   flex-direction: column;
@@ -254,7 +245,6 @@
 }
 .pp__empty-icon { font-size: 3rem; margin-bottom: .5rem; }
 
-/* ── Product Modal ────────────────────────────────────── */
 .pm-overlay {
   position: fixed;
   inset: 0;

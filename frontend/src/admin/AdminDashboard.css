@@ -1,8 +1,5 @@
-/* ═══════════════════════════════════════════════════════
-   ADMIN DASHBOARD  —  Mobile-first responsive
-═══════════════════════════════════════════════════════ */
+﻿
 
-/* ── Layout ───────────────────────────────────────────── */
 .adm {
   display: flex;
   min-height: 100vh;
@@ -10,7 +7,6 @@
   font-family: 'Segoe UI', system-ui, sans-serif;
 }
 
-/* ── Sidebar ──────────────────────────────────────────── */
 .adm__sidebar {
   width: 220px;
   background: #0f172a;
@@ -47,7 +43,6 @@
 }
 .adm__sidebar-sub { font-size: .62rem; color: #64748b; margin: 0; }
 
-/* Nav */
 .adm__nav {
   flex: 1;
   display: flex;
@@ -74,7 +69,6 @@
 .adm__nav-item:hover { background: #1e293b; color: #fff; }
 .adm__nav-item--active { background: #1e3a8a; color: #fff; }
 
-/* Sidebar footer */
 .adm__sidebar-footer {
   padding: 1rem .8rem;
   border-top: 1px solid #1e293b;
@@ -113,7 +107,6 @@
 }
 .adm__logout:hover { background: #dc2626; color: #fff; }
 
-/* ── Main ─────────────────────────────────────────────── */
 .adm__main {
   flex: 1;
   padding: 1.2rem;
@@ -121,7 +114,6 @@
 }
 @media (min-width: 768px) { .adm__main { padding: 1.8rem 2rem; } }
 
-/* Top bar */
 .adm__topbar {
   display: flex;
   align-items: flex-start;
@@ -151,7 +143,6 @@
 }
 .adm__refresh:hover { background: #f1f5f9; }
 
-/* ── Stats ────────────────────────────────────────────── */
 .adm__stats {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -185,7 +176,6 @@
 }
 .stat-card__label { font-size: .74rem; color: #64748b; margin: 0; font-weight: 600; }
 
-/* ── Toolbar ──────────────────────────────────────────── */
 .adm__toolbar {
   display: flex;
   flex-direction: column;
@@ -235,7 +225,6 @@
 }
 .adm__search:focus { border-color: #3b82f6; }
 
-/* ── Table ────────────────────────────────────────────── */
 .adm__table-wrap {
   background: #fff;
   border-radius: 12px;
@@ -284,7 +273,6 @@
 
 .enq-row__date { color: #64748b; white-space: nowrap; font-size: .78rem; }
 
-/* ── Badges ───────────────────────────────────────────── */
 .badge {
   display: inline-flex;
   align-items: center;
@@ -299,7 +287,6 @@
 .badge--resolved    { background: #d1fae5; color: #065f46; }
 .badge--in-progress { background: #dbeafe; color: #1e40af; }
 
-/* ── Action Buttons ───────────────────────────────────── */
 .enq-row__actions { display: flex; gap: .35rem; align-items: center; flex-wrap: wrap; }
 .act-btn {
   width: 30px; height: 30px;
@@ -318,7 +305,6 @@
 .act-btn--reopen  { background: #fef3c7; }
 .act-btn--delete  { background: #fee2e2; }
 
-/* ── Loading / Empty ──────────────────────────────────── */
 .adm__loading {
   display: flex;
   flex-direction: column;
@@ -346,7 +332,6 @@
 
 .adm__count { font-size: .78rem; color: #94a3b8; text-align: right; margin-top: .5rem; }
 
-/* ── Modal ────────────────────────────────────────────── */
 .modal-overlay {
   position: fixed;
   inset: 0;

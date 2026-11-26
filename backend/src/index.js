@@ -1,4 +1,4 @@
-require('dotenv').config();
+﻿require('dotenv').config();
 const express    = require('express');
 const cors       = require('cors');
 const { ApolloServer }     = require('@apollo/server');
@@ -24,18 +24,15 @@ const startServer = async () => {
 
   app.use(cors({
     origin: function (origin, callback) {
-      // Allow requests with no origin (mobile apps, Postman, server-to-server)
       if (!origin) return callback(null, true);
-      // Allow any Vercel preview, Render, and localhost
       const allowed = [
         /\.vercel\.app$/,
         /\.onrender\.com$/,
         /^https?:\/\/localhost/,
       ];
       if (allowed.some((re) => re.test(origin))) return callback(null, true);
-      // Also check CLIENT_URL env var
       if (process.env.CLIENT_URL && origin === process.env.CLIENT_URL) return callback(null, true);
-      callback(null, true); // allow all in development; restrict in production if needed
+      callback(null, true);
     },
     credentials: true,
   }));
@@ -46,7 +43,7 @@ const startServer = async () => {
     expressMiddleware(server, {
       context: async ({ req }) => ({
         req,
-        admin: getAdminFromToken(req),   // null if not logged in
+        admin: getAdminFromToken(req),
       }),
     })
   );
