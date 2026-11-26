@@ -2,7 +2,7 @@
 import { setContext } from '@apollo/client/link/context';
 
 const httpLink = createHttpLink({
-  uri: import.meta.env.VITE_GRAPHQL_URI || 'http://localhost:4000/graphql',
+  uri: import.meta.env.VITE_GRAPHQL_URI,
 });
 
 const authLink = setContext((_, { headers }) => {
@@ -23,5 +23,5 @@ const client = new ApolloClient({
     query:      { fetchPolicy: 'network-only' },
   },
 });
-
+ 
 export { client, ApolloProvider };

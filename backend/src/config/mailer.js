@@ -1,4 +1,6 @@
-﻿const nodemailer = require('nodemailer');
+const nodemailer = require('nodemailer');
+
+const { whatsappHref: businessWhatsappHref } = require('./whatsapp');
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -93,7 +95,7 @@ const sendCustomerAutoReply = async ({ name, email }) => {
           </p>
           <ul style="padding-left:18px;">
             <li>📞 <a href="tel:+919845012345" style="color:#2563eb;">+91 98450 12345</a></li>
-            <li>💬 <a href="https://wa.me/919845012345" style="color:#2563eb;">WhatsApp Us</a></li>
+            ${businessWhatsappHref ? `<li>💬 <a href="${businessWhatsappHref}" style="color:#2563eb;">WhatsApp Us</a></li>` : ''}
             <li>🌐 <a href="https://intamsolutions.com" style="color:#2563eb;">www.intamsolutions.com</a></li>
           </ul>
           <p style="margin-top:24px;">

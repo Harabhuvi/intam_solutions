@@ -1,0 +1,124 @@
+.wa-fab {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: .75rem;
+}
+
+.wa-fab__btn {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  background: #25d366;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(37,211,102,.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform .2s ease, box-shadow .2s ease;
+  flex-shrink: 0;
+}
+.wa-fab__btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 28px rgba(37,211,102,.55);
+}
+.wa-fab--open .wa-fab__btn {
+  background: #128c5e;
+}
+
+.wa-fab__icon {
+  width: 32px;
+  height: 32px;
+}
+
+.wa-fab__pulse {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 3px solid #25d366;
+  animation: wa-pulse 2s ease-out infinite;
+  pointer-events: none;
+}
+@keyframes wa-pulse {
+  0%   { opacity: .8; transform: scale(1); }
+  70%  { opacity: 0;  transform: scale(1.5); }
+  100% { opacity: 0;  transform: scale(1.5); }
+}
+
+.wa-fab__card {
+  width: 280px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.18);
+  overflow: hidden;
+  animation: wa-slide-in .2s ease;
+}
+@keyframes wa-slide-in {
+  from { opacity: 0; transform: translateY(12px) scale(.96); }
+  to   { opacity: 1; transform: translateY(0)   scale(1); }
+}
+
+.wa-fab__card-header {
+  background: #25d366;
+  padding: .9rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+}
+.wa-fab__card-icon { font-size: 1.4rem; }
+.wa-fab__card-title {
+  font-size: .9rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+}
+.wa-fab__card-sub {
+  font-size: .72rem;
+  color: rgba(255,255,255,.85);
+  margin: 0;
+}
+.wa-fab__card-close {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  opacity: .8;
+  line-height: 1;
+  padding: 2px 4px;
+}
+.wa-fab__card-close:hover { opacity: 1; }
+
+.wa-fab__card-body {
+  padding: .9rem 1rem .5rem;
+  font-size: .88rem;
+  color: #374151;
+}
+
+.wa-fab__card-btn {
+  display: block;
+  margin: .5rem 1rem 1rem;
+  padding: .6rem 1rem;
+  background: #25d366;
+  color: #fff;
+  font-weight: 700;
+  font-size: .88rem;
+  border-radius: 8px;
+  text-align: center;
+  transition: background .2s;
+}
+.wa-fab__card-btn:hover { background: #128c5e; }
+
+@media (max-width: 480px) {
+  .wa-fab { bottom: 1rem; right: 1rem; }
+  .wa-fab__btn { width: 50px; height: 50px; }
+  .wa-fab__icon { width: 28px; height: 28px; }
+  .wa-fab__card { width: 240px; }
+}

@@ -68,6 +68,16 @@ npm run dev      # Vite → http://localhost:5173
 | `PORT` | 5000 | Express server port |
 | `MONGO_URI` | `mongodb://localhost:27017/intam_solutions` | MongoDB connection string |
 | `NODE_ENV` | `development` | Node environment |
+| `WHATSAPPNUMBER` | *(unset)* | WhatsApp business number in international format, digits only |
+| `CONTACT_TITLE` | `Contact Us` | Footer contact heading |
+| `CONTACT_PHONE` | `+91 98450 12345` | Public contact phone |
+| `CONTACT_PHONE_HREF` | Derived from `CONTACT_PHONE` | Optional `tel:` link override |
+| `CONTACT_EMAIL` | `info@intamsolutions.com` | Public contact email |
+| `CONTACT_EMAIL_HREF` | Derived from `CONTACT_EMAIL` | Optional `mailto:` link override |
+| `CONTACT_ADDRESS` | `Coimbatore, Tamil Nadu` | Public contact address |
+| `FACEBOOK_URL` | `#facebook` | Facebook link |
+| `LINKEDIN_URL` | `#linkedin` | LinkedIn link |
+| `YOUTUBE_URL` | `#youtube` | YouTube link |
 
 ### `frontend/.env`
 | Variable | Default | Description |

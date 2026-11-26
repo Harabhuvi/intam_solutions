@@ -1,4 +1,4 @@
-﻿const mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
 const categorySchema = new mongoose.Schema(
   {
@@ -12,5 +12,6 @@ const categorySchema = new mongoose.Schema(
 );
 
 categorySchema.index({ slug: 1 }, { unique: true });
+categorySchema.index({ name: 1 });
 
 module.exports = mongoose.model('Category', categorySchema);

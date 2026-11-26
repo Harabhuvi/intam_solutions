@@ -1,7 +1,6 @@
-﻿const { gql } = require('graphql-tag');
+const { gql } = require('graphql-tag');
 
 const typeDefs = gql`
-  # ─── Shared types ────────────────────────────────────────
   type Product {
     id: ID!
     name: String!
@@ -108,10 +107,38 @@ const typeDefs = gql`
     todayCount: Int!
   }
 
+  type PageInfo {
+    hasNextPage: Boolean!
+    nextCursor: String
+    limit: Int!
+  }
+
+  type ProductConnection {
+    items: [Product!]!
+    pageInfo: PageInfo!
+  }
+
+  type ContactQueryConnection {
+    items: [ContactQuery!]!
+    pageInfo: PageInfo!
+  }
+
+  type QueryProfile {
+    label: String!
+    executionTimeMillis: Int!
+    totalKeysExamined: Int!
+    totalDocsExamined: Int!
+    nReturned: Int!
+    stages: [String!]!
+    indexesUsed: [String!]!
+    isCollectionScan: Boolean!
+  }
+
   # ─── Queries ──────────────────────────────────────────────
   type Query {
-    # Public
+    # Admin-protected catalog mutations
     products: [Product!]!
+    productsConnection(category: String, search: String, after: String, limit: Int): ProductConnection!
     product(id: ID!): Product
     productsByCategory(category: String!): [Product!]!
     categories: [Category!]!
@@ -120,9 +147,11 @@ const typeDefs = gql`
 
     # Admin-protected
     contactQueries(status: String, search: String): [ContactQuery!]!
+    contactQueriesConnection(status: String, search: String, after: String, limit: Int): ContactQueryConnection!
     contactQuery(id: ID!): ContactQuery
     enquiryStats: EnquiryStats!
     adminProfile: Admin
+    queryProfiles: [QueryProfile!]!
   }
 
   # ─── Mutations ────────────────────────────────────────────
@@ -168,7 +197,7 @@ const typeDefs = gql`
       message: String!
     ): ContactQuery!
 
-    # Admin Auth
+    # Admin authentication
     adminLogin(email: String!, password: String!): AuthPayload!
 
     # Admin-protected enquiry management

@@ -1,4 +1,4 @@
-﻿const mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
 const productSchema = new mongoose.Schema(
   {
@@ -13,8 +13,9 @@ const productSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-productSchema.index({ category: 1 });
-productSchema.index({ createdAt: -1 });
-productSchema.index({ name: 'text', brand: 'text', description: 'text' });
+productSchema.index({ category: 1, createdAt: -1, _id: -1 });
+productSchema.index({ createdAt: -1, _id: -1 });
+productSchema.index({ inStock: 1, category: 1, createdAt: -1 });
+productSchema.index({ name: 'text', brand: 'text', description: 'text' }, { name: 'product_text' });
 
 module.exports = mongoose.model('Product', productSchema);

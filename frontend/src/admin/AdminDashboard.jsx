@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 import {
   GET_ENQUIRIES,
@@ -152,8 +152,8 @@ const AdminDashboard = ({ adminUser, onLogout }) => {
   };
 
   const stats  = statsData?.enquiryStats;
-  const admin  = profileData?.adminProfile || adminUser;
-  const enquiries = data?.contactQueries || [];
+  const admin  = profileData?.adminProfile ?? adminUser;
+  const enquiries = data?.contactQueries ?? [];
 
   return (
     <div className="adm">
@@ -184,10 +184,10 @@ const AdminDashboard = ({ adminUser, onLogout }) => {
 
         <div className="adm__sidebar-footer">
           <div className="adm__admin-info">
-            <div className="adm__admin-avatar">{admin?.name?.[0] || 'A'}</div>
+            <div className="adm__admin-avatar">{admin?.name?.[0]}</div>
             <div>
-              <p className="adm__admin-name">{admin?.name || 'Admin'}</p>
-              <p className="adm__admin-role">{admin?.role || 'admin'}</p>
+              <p className="adm__admin-name">{admin?.name}</p>
+              <p className="adm__admin-role">{admin?.role}</p>
             </div>
           </div>
           <button className="adm__logout" onClick={onLogout}>⏻ Logout</button>

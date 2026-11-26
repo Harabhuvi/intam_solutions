@@ -1,175 +1,134 @@
-﻿const Product      = require('../models/Product');
-const Category     = require('../models/Category');
 const ContactQuery = require('../models/ContactQuery');
-const Admin        = require('../models/Admin');
-const FooterContent = require('../models/FooterContent');
-const { generateToken, requireAdmin } = require('../config/auth');
+const Admin = require('../models/Admin');
+const cache = require('../config/redis');
+const { generateToken } = require('../config/auth');
 const { sendEnquiryNotification, sendCustomerAutoReply } = require('../config/mailer');
+const { buildEnquiryFilter, paginateWithCursor } = require('../utils/queryHelpers');
+const { profileAllQueries } = require('../utils/queryProfiler');
+const { fail, requireAuthenticatedAdmin, wrapResolvers } = require('./resolverUtils');
+const productResolvers = require('./products/productResolvers');
+const footerResolvers = require('./footer/footerResolvers');
 
-const defaultFooterContent = {
-  ctaTitle: 'Looking for the right security solution?',
-  ctaDescription: 'Tell us about your requirements. Our team can help you select suitable products and arrange a site visit or quotation.',
-  ctaContactLabel: 'Contact Us', ctaContactHref: '/contact',
-  whatsappLabel: 'WhatsApp', whatsappHref: 'https://wa.me/919845012345',
-  brandName: 'INTAM SOLUTIONS', tagline: 'Smart Security. Intelligent Automation.',
-  brandDescription: 'Providing top-tier electronic security and automation solutions across residential, commercial, and industrial spaces.',
-  quickLinksTitle: 'Quick Links',
-  quickLinks: [
-    { label: 'Home', href: '/' }, { label: 'Products', href: '/products' },
-    { label: 'Solutions', href: '/solutions' }, { label: 'Brands', href: '/brands' },
-    { label: 'Contact', href: '/contact' },
-  ],
-  servicesTitle: 'Services',
-  serviceLinks: [
-    { label: 'Projects', href: '/projects' }, { label: 'Services & AMC', href: '/services' },
-    { label: 'About Us', href: '/about' }, { label: 'Contact', href: '/contact' },
-  ],
-  contactTitle: 'Contact Us', phone: '+91 98450 12345', phoneHref: 'tel:+919845012345',
-  email: 'info@intamsolutions.com', emailHref: 'mailto:info@intamsolutions.com',
-  address: 'Coimbatore, Tamil Nadu',
-  socialLinks: [
-    { label: 'Facebook', href: '#facebook', icon: 'f' },
-    { label: 'LinkedIn', href: '#linkedin', icon: 'in' },
-    { label: 'YouTube', href: '#youtube', icon: '▶' },
-  ],
-  copyrightText: 'Intam Solutions. All rights reserved.',
-};
+const ENQUIRY_STATUSES = new Set(['pending', 'resolved', 'in-progress']);
 
-const isSafeFooterHref = (href) => /^(https?:\/\/|mailto:|tel:|#|\/(?!\/))/.test(href || '');
-
-const resolvers = {
+const enquiryResolvers = wrapResolvers({
+  ContactQuery: {
+    id: (enquiry) => String(enquiry._id || enquiry.id),
+  },
+  Admin: {
+    id: (admin) => String(admin._id || admin.id),
+  },
   Query: {
-
-    products:            async () => await Product.find().sort({ createdAt: -1 }).lean(),
-    product:             async (_, { id }) => await Product.findById(id).lean(),
-    productsByCategory:  async (_, { category }) => await Product.find({ category }).sort({ createdAt: -1 }).lean(),
-    categories:          async () => await Category.find().lean(),
-    category:            async (_, { slug }) => await Category.findOne({ slug }).lean(),
-    footerContent: async () => {
-      const content = await FooterContent.findOne({ key: 'main' }).lean();
-      return content || defaultFooterContent;
+    contactQueries: async (_, { status, search }, { admin }) => {
+      requireAuthenticatedAdmin(admin);
+      if (status && status !== 'all' && !ENQUIRY_STATUSES.has(status)) {
+        fail('Invalid enquiry status.');
+      }
+      const filter = buildEnquiryFilter({ status, search });
+      return ContactQuery.find(filter).sort({ createdAt: -1, _id: -1 }).lean();
     },
 
-
-    contactQueries: async (_, { status, search }, { admin }) => {
-      requireAdmin(admin);
-      const filter = {};
-      if (status && status !== 'all') filter.status = status;
-      if (search && search.trim()) {
-        const trimmed = search.trim();
-        const isShortExact = trimmed.length < 4 || /^\+?\d[\d\s\-]+$/.test(trimmed);
-        if (isShortExact) {
-          const re = new RegExp(`^${trimmed.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'i');
-          filter.$or = [{ name: re }, { email: re }, { phone: re }];
-        } else {
-          filter.$text = { $search: trimmed };
-        }
+    contactQueriesConnection: async (_, { status, search, after, limit }, { admin }) => {
+      requireAuthenticatedAdmin(admin);
+      if (status && status !== 'all' && !ENQUIRY_STATUSES.has(status)) {
+        fail('Invalid enquiry status.');
       }
-      return await ContactQuery.find(filter).sort({ createdAt: -1 });
+      const filter = buildEnquiryFilter({ status, search });
+      return paginateWithCursor(ContactQuery, filter, { cursor: after, limit });
     },
 
     contactQuery: async (_, { id }, { admin }) => {
-      requireAdmin(admin);
-      return await ContactQuery.findById(id);
+      requireAuthenticatedAdmin(admin);
+      return ContactQuery.findById(id).lean();
     },
 
     enquiryStats: async (_, __, { admin }) => {
-      requireAdmin(admin);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      const [total, pending, resolved, todayCount] = await Promise.all([
-        ContactQuery.countDocuments(),
-        ContactQuery.countDocuments({ status: 'pending' }),
-        ContactQuery.countDocuments({ status: 'resolved' }),
-        ContactQuery.countDocuments({ createdAt: { $gte: today } }),
-      ]);
-      return { total, pending, resolved, todayCount };
+      requireAuthenticatedAdmin(admin);
+      const { data } = await cache.getOrSet('dashboard:enquiryStats', 60, async () => {
+        const startOfDay = new Date();
+        startOfDay.setHours(0, 0, 0, 0);
+        const [total, pending, resolved, todayCount] = await Promise.all([
+          ContactQuery.countDocuments(),
+          ContactQuery.countDocuments({ status: 'pending' }),
+          ContactQuery.countDocuments({ status: 'resolved' }),
+          ContactQuery.countDocuments({ createdAt: { $gte: startOfDay } }),
+        ]);
+        return { total, pending, resolved, todayCount };
+      });
+      return data;
     },
 
     adminProfile: async (_, __, { admin }) => {
-      requireAdmin(admin);
-      return await Admin.findById(admin.id);
+      requireAuthenticatedAdmin(admin);
+      return Admin.findById(admin.id).select('-password').lean();
+    },
+
+    queryProfiles: async (_, __, { admin }) => {
+      requireAuthenticatedAdmin(admin);
+      return profileAllQueries();
     },
   },
 
   Mutation: {
-
-    addProduct: async (_, args, { admin }) => {
-      requireAdmin(admin);
-      return await new Product(args).save();
-    },
-    updateProduct: async (_, { id, ...args }, { admin }) => {
-      requireAdmin(admin);
-      const product = await Product.findByIdAndUpdate(id, args, { new: true, runValidators: true });
-      if (!product) throw new Error('Product not found');
-      return product;
-    },
-    deleteProduct: async (_, { id }, { admin }) => {
-      requireAdmin(admin);
-      const product = await Product.findByIdAndDelete(id);
-      if (!product) throw new Error('Product not found');
-      return true;
-    },
-    addCategory: async (_, args) => await new Category(args).save(),
-    updateFooterContent: async (_, { content }, { admin }) => {
-      requireAdmin(admin);
-      const linkValues = [
-        content.ctaContactHref, content.whatsappHref, content.phoneHref, content.emailHref,
-        ...(content.quickLinks || []).map((link) => link.href),
-        ...(content.serviceLinks || []).map((link) => link.href),
-        ...(content.socialLinks || []).map((link) => link.href),
-      ].filter(Boolean);
-      if (linkValues.some((href) => !isSafeFooterHref(href))) {
-        throw new Error('Footer links must use http(s), mailto, tel, #, or a site-relative URL');
-      }
-      return await FooterContent.findOneAndUpdate(
-        { key: 'main' },
-        { $set: content, $setOnInsert: { key: 'main' } },
-        { new: true, upsert: true, runValidators: true, setDefaultsOnInsert: true }
-      );
-    },
-
     submitContactQuery: async (_, args) => {
-      const query = await new ContactQuery(args).save();
-      // Send emails in background (don't block the GraphQL response)
-      Promise.all([
+      const query = await new ContactQuery({
+        name: args.name.trim(),
+        email: args.email.trim().toLowerCase(),
+        phone: args.phone?.trim(),
+        message: args.message.trim(),
+      }).save();
+
+      await cache.del('dashboard:enquiryStats', 'dashboard:summary');
+
+      Promise.allSettled([
         sendEnquiryNotification(args),
         sendCustomerAutoReply(args),
-      ]).catch((err) => console.error('Email error:', err.message));
+      ]).then((results) => {
+        results.filter((result) => result.status === 'rejected').forEach(({ reason }) => {
+          console.error('Contact notification email failed:', reason?.message || reason);
+        });
+      });
       return query;
     },
 
-
     adminLogin: async (_, { email, password }) => {
-      const admin = await Admin.findOne({ email: email.toLowerCase(), isActive: true });
-      if (!admin) throw new Error('Invalid credentials');
-      const ok = await admin.matchPassword(password);
-      if (!ok)  throw new Error('Invalid credentials');
+      const normalizedEmail = email?.trim().toLowerCase();
+      if (!normalizedEmail || !password) fail('Invalid credentials.', 'UNAUTHENTICATED');
+      const admin = await Admin.findOne({ email: normalizedEmail, isActive: true });
+      if (!admin || !(await admin.matchPassword(password))) {
+        fail('Invalid credentials.', 'UNAUTHENTICATED');
+      }
       admin.lastLogin = new Date();
       await admin.save();
       return { token: generateToken(admin), admin };
     },
 
-
     updateEnquiryStatus: async (_, { id, status }, { admin }) => {
-      requireAdmin(admin);
-      const valid = ['pending', 'resolved', 'in-progress'];
-      if (!valid.includes(status)) throw new Error('Invalid status value');
-      const q = await ContactQuery.findByIdAndUpdate(
-        id,
-        { status },
-        { new: true }
+      requireAuthenticatedAdmin(admin);
+      if (!ENQUIRY_STATUSES.has(status)) fail('Invalid status value.');
+      const enquiry = await ContactQuery.findByIdAndUpdate(
+        id, { status }, { new: true, runValidators: true }
       );
-      if (!q) throw new Error('Enquiry not found');
-      return q;
+      if (!enquiry) fail('Enquiry not found.', 'NOT_FOUND');
+      await cache.del('dashboard:enquiryStats', 'dashboard:summary');
+      return enquiry;
     },
 
     deleteEnquiry: async (_, { id }, { admin }) => {
-      requireAdmin(admin);
-      await ContactQuery.findByIdAndDelete(id);
+      requireAuthenticatedAdmin(admin);
+      const enquiry = await ContactQuery.findByIdAndDelete(id);
+      if (!enquiry) fail('Enquiry not found.', 'NOT_FOUND');
+      await cache.del('dashboard:enquiryStats', 'dashboard:summary');
       return true;
     },
   },
-};
+});
 
-module.exports = resolvers;
+const mergeResolvers = (...resolverMaps) => resolverMaps.reduce((merged, resolverMap) => {
+  for (const [typeName, fields] of Object.entries(resolverMap)) {
+    merged[typeName] = { ...merged[typeName], ...fields };
+  }
+  return merged;
+}, {});
+
+module.exports = mergeResolvers(enquiryResolvers, productResolvers, footerResolvers);

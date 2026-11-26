@@ -1,4 +1,4 @@
-﻿const mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
 const contactQuerySchema = new mongoose.Schema(
   {
@@ -15,8 +15,8 @@ const contactQuerySchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-contactQuerySchema.index({ status: 1, createdAt: -1 });
-contactQuerySchema.index({ createdAt: -1 });
+contactQuerySchema.index({ status: 1, createdAt: -1, _id: -1 });
+contactQuerySchema.index({ createdAt: -1, _id: -1 });
 contactQuerySchema.index(
   { name: 'text', email: 'text', phone: 'text', message: 'text' },
   { name: 'contactquery_text' }

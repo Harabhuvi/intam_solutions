@@ -1,14 +1,16 @@
-﻿import React, { useState } from 'react';
-import { useMutation } from '@apollo/client';
-import { SUBMIT_CONTACT } from '../graphql/queries';
+import React, { useState } from 'react';
+import { useMutation, useQuery } from '@apollo/client';
+import { GET_FOOTER_CONTENT, SUBMIT_CONTACT } from '../../graphql/queries';
+import useWhatsappSettings from '../../hooks/useWhatsappSettings';
 import Header from './Header';
 import Footer from './Footer';
-import './ContactPage.css';
+import '../style/ContactPage.css';
 
 const ContactPage = () => {
   const [form, setForm] = useState({ name: '', email: '', phone: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
   const [submitContact, { loading }] = useMutation(SUBMIT_CONTACT);
+  const { href: whatsappHref } = useWhatsappSettings();
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -29,7 +31,7 @@ const ContactPage = () => {
       <Header />
       <main className="contact-page section">
         <div className="container">
-          {}
+          { }
           <div className="cp__header">
             <h1 className="cp__title">Contact Us</h1>
             <p className="cp__sub">
@@ -38,7 +40,7 @@ const ContactPage = () => {
           </div>
 
           <div className="cp__grid">
-            {}
+            { }
             <div className="cp__info">
               <div className="cp__info-card">
                 <span className="cp__info-icon">📞</span>
@@ -62,7 +64,7 @@ const ContactPage = () => {
                 <span className="cp__info-icon">💬</span>
                 <div>
                   <h3 className="cp__info-title">WhatsApp</h3>
-                  <a href="https://wa.me/919845012345" target="_blank" rel="noreferrer" className="cp__info-link">
+                  <a href={whatsappHref} target="_blank" rel="noreferrer" className="cp__info-link">
                     Chat on WhatsApp
                   </a>
                   <p className="cp__info-note">Quick responses</p>
@@ -79,7 +81,7 @@ const ContactPage = () => {
               </div>
             </div>
 
-            {}
+            { }
             <div className="cp__form-wrap">
               <h2 className="cp__form-heading">Send Us a Message</h2>
 
@@ -149,11 +151,7 @@ const ContactPage = () => {
                     />
                   </div>
 
-                  <button
-                    type="submit"
-                    className="btn btn--primary cp__submit"
-                    disabled={loading}
-                  >
+                  <button type="submit" className="btn btn--primary cp__submit" disabled={loading}>
                     {loading ? 'Sending…' : 'Send Message →'}
                   </button>
                 </form>

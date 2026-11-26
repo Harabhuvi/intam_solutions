@@ -2,10 +2,11 @@
   "name": "intam-backend",
   "version": "1.0.0",
   "description": "Intam Solutions Backend – Node.js + GraphQL + MongoDB",
-  "main": "src/index.js",
+  "main": "src/server.js",
   "scripts": {
-    "start": "node src/index.js",
-    "dev": "nodemon src/index.js"
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "profile": "node src/scripts/profileQueries.js"
   },
   "dependencies": {
     "@apollo/server": "^4.10.0",
@@ -16,6 +17,7 @@
     "express": "^4.19.2",
     "graphql": "^16.8.1",
     "graphql-tag": "^2.12.7",
+    "ioredis": "^6.1.0",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^8.3.0",
     "nodemailer": "^10.6.1"

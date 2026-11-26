@@ -1,7 +1,27 @@
 ﻿
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
+  --background: 210 40% 98%;
+  --foreground: 222 47% 11%;
+  --card: 0 0% 100%;
+  --card-foreground: 222 47% 11%;
+  --primary: 221 83% 53%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 214 32% 91%;
+  --secondary-foreground: 222 47% 11%;
+  --muted: 214 32% 95%;
+  --muted-foreground: 215 16% 47%;
+  --accent: 214 100% 97%;
+  --accent-foreground: 221 83% 45%;
+  --border: 214 32% 88%;
+  --input: 214 32% 88%;
+  --ring: 221 83% 53%;
+  --radius: .85rem;
   --blue:       #2563eb;
   --blue-dark:  #1d4ed8;
   --blue-light: #eff6ff;
@@ -24,7 +44,7 @@
 html { scroll-behavior: smooth; font-size: 16px; }
 
 body {
-  font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: Inter, 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   background: var(--gray-50);
   color: var(--navy);
   -webkit-font-smoothing: antialiased;

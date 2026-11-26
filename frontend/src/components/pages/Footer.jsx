@@ -1,13 +1,9 @@
-﻿import React from 'react';
+import React from 'react';
 import { useQuery } from '@apollo/client';
-import { GET_FOOTER_CONTENT } from '../graphql/queries';
-import './Footer.css';
+import { GET_FOOTER_CONTENT } from '../../graphql/queries';
+import '../style/Footer.css';
 
 const DEFAULT_FOOTER = {
-  ctaTitle: 'Looking for the right security solution?',
-  ctaDescription: 'Tell us about your requirements. Our team can help you select suitable products and arrange a site visit or quotation.',
-  ctaContactLabel: 'Contact Us', ctaContactHref: '/contact',
-  whatsappLabel: 'WhatsApp', whatsappHref: 'https://wa.me/919845012345',
   brandName: 'INTAM SOLUTIONS', tagline: 'Smart Security. Intelligent Automation.',
   brandDescription: 'Providing top-tier electronic security and automation solutions across residential, commercial, and industrial spaces.',
   quickLinksTitle: 'Quick Links',
@@ -35,27 +31,12 @@ const DEFAULT_FOOTER = {
 const Footer = () => {
   const { data } = useQuery(GET_FOOTER_CONTENT);
   const content = { ...DEFAULT_FOOTER, ...data?.footerContent };
-  const quickLinks = content.quickLinks || [];
-  const serviceLinks = content.serviceLinks || [];
-  const socialLinks = content.socialLinks || [];
+  const quickLinks = content.quickLinks;
+  const serviceLinks = content.serviceLinks;
+  const socialLinks = content.socialLinks;
 
   return (
     <footer className="footer">
-      <div className="footer__cta">
-        <div className="footer__cta-inner container">
-          <div>
-            <p className="footer__cta-heading">{content.ctaTitle}</p>
-            <p className="footer__cta-sub">{content.ctaDescription}</p>
-          </div>
-          <div className="footer__cta-btns">
-            <a href={content.ctaContactHref || '/contact'} className="btn btn--outline-dark">{content.ctaContactLabel}</a>
-            <a href={content.whatsappHref || DEFAULT_FOOTER.whatsappHref} className="btn btn--whatsapp" target="_blank" rel="noreferrer">
-              💬 {content.whatsappLabel}
-            </a>
-          </div>
-        </div>
-      </div>
-
       <div className="footer__main container">
         <div className="footer__col footer__col--brand">
           <a href="/" className="footer__logo-link">
@@ -85,11 +66,11 @@ const Footer = () => {
         <div className="footer__col">
           <h4 className="footer__col-title">{content.contactTitle}</h4>
           <ul className="footer__contact-list">
-            {content.phone && <li>📞 <a href={content.phoneHref || `tel:${content.phone.replace(/\s/g, '')}`}>{content.phone}</a></li>}
-            {content.email && <li>✉ <a href={content.emailHref || `mailto:${content.email}`}>{content.email}</a></li>}
+            {content.phone && <li>📞 <a href={content.phoneHref}>{content.phone}</a></li>}
+            {content.email && <li>✉ <a href={content.emailHref}>{content.email}</a></li>}
             {content.address && <li>📍 {content.address}</li>}
           </ul>
-          <div className="footer__social">{socialLinks.map((link, index) => <a key={`${link.href}-${index}`} href={link.href} aria-label={link.label} className="footer__social-icon" target="_blank" rel="noreferrer">{link.icon || link.label.slice(0, 2)}</a>)}</div>
+          <div className="footer__social">{socialLinks.map((link, index) => <a key={`${link.href}-${index}`} href={link.href} aria-label={link.label} className="footer__social-icon" target="_blank" rel="noreferrer">{link.icon}</a>)}</div>
         </div>
       </div>
 
