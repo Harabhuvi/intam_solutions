@@ -171,16 +171,7 @@ const ProductsPage = () => {
               <p className="pp__count">
                 {loading ? 'Loading…' : `${products.length} product${products.length !== 1 ? 's' : ''} found`}
               </p>
-              <div className="pp__search-wrap">
-                <span>🔍</span>
-                <input
-                  type="search"
-                  className="pp__search"
-                  placeholder="Search products, brands…"
-                  value={search}
-                  onChange={e => setSearch(e.target.value)}
-                />
-              </div>
+            
             </div>
 
             {}
