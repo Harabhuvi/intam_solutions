@@ -16,13 +16,20 @@ if (whatsappNumber && !/^\d{8,15}$/.test(whatsappNumber)) {
   throw new Error('WHATSAPPNUMBER must contain 8 to 15 digits in international format.');
 }
 
+const normalizeJwtExpiresIn = (value = '7d') => {
+  const trimmed = String(value).trim();
+  if (!trimmed) return '7d';
+  if (/^\d+$/.test(trimmed)) return `${trimmed}d`;
+  return trimmed;
+};
+
 module.exports = {
   nodeEnv: process.env.NODE_ENV || 'development',
   isProd,
   port: process.env.PORT,
   mongoUri: process.env.MONGO_URI,
   jwtSecret: process.env.JWT_SECRET,
-  jwtExpiresIn: process.env.JWT_EXPIRES_IN,
+  jwtExpiresIn: normalizeJwtExpiresIn(process.env.JWT_EXPIRES_IN),
   allowedOrigins: parseCsvList(process.env.CLIENT_URL),
   whatsappNumber,
   whatsappHref: whatsappNumber ? `https://wa.me/${whatsappNumber}` : '',
