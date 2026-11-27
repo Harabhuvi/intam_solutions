@@ -85,7 +85,6 @@ const typeDefs = gql`
     updatedAt: String
   }
 
-  # ─── Admin types ──────────────────────────────────────────
   type Admin {
     id: ID!
     name: String!
@@ -134,9 +133,7 @@ const typeDefs = gql`
     isCollectionScan: Boolean!
   }
 
-  # ─── Queries ──────────────────────────────────────────────
   type Query {
-    # Admin-protected catalog mutations
     products: [Product!]!
     productsConnection(category: String, search: String, after: String, limit: Int): ProductConnection!
     product(id: ID!): Product
@@ -145,7 +142,6 @@ const typeDefs = gql`
     category(slug: String!): Category
     footerContent: FooterContent!
 
-    # Admin-protected
     contactQueries(status: String, search: String): [ContactQuery!]!
     contactQueriesConnection(status: String, search: String, after: String, limit: Int): ContactQueryConnection!
     contactQuery(id: ID!): ContactQuery
@@ -154,9 +150,7 @@ const typeDefs = gql`
     queryProfiles: [QueryProfile!]!
   }
 
-  # ─── Mutations ────────────────────────────────────────────
   type Mutation {
-    # Public
     addProduct(
       name: String!
       description: String
@@ -197,10 +191,8 @@ const typeDefs = gql`
       message: String!
     ): ContactQuery!
 
-    # Admin authentication
     adminLogin(email: String!, password: String!): AuthPayload!
 
-    # Admin-protected enquiry management
     updateEnquiryStatus(id: ID!, status: String!): ContactQuery!
     deleteEnquiry(id: ID!): Boolean!
   }

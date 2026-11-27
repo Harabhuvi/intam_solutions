@@ -1,34 +1,38 @@
-require('dotenv').config();
 const FooterContent = require('../../models/FooterContent');
 const cache = require('../../config/redis');
-const { whatsappHref } = require('../../config/whatsapp');
+const { whatsappHref } = require('../../config/env');
 const contactDefaults = require('../../config/contactDefaults');
-
-const { fail, requireAuthenticatedAdmin, wrapResolvers } = require('../resolverUtils');
+const { fail, requireAuthenticatedAdmin, wrapResolvers } = require('./resolverUtils');
 
 const FOOTER_KEY = 'main';
 const WHATSAPP_HREF_RE = /^https:\/\/wa\.me\/\d{8,15}$/;
 
 const defaultFooterContent = {
   ctaTitle: 'Looking for the right security solution?',
-  ctaDescription: 'Tell us about your requirements. Our team can help you select suitable products and arrange a site visit or quotation.',
+  ctaDescription:
+    'Tell us about your requirements. Our team can help you select suitable products and arrange a site visit or quotation.',
   ctaContactLabel: 'Contact Us',
   ctaContactHref: '/contact',
   whatsappLabel: 'WhatsApp',
   whatsappHref,
   brandName: 'INTAM SOLUTIONS',
   tagline: 'Smart Security. Intelligent Automation.',
-  brandDescription: 'Providing top-tier electronic security and automation solutions across residential, commercial, and industrial spaces.',
+  brandDescription:
+    'Providing top-tier electronic security and automation solutions across residential, commercial, and industrial spaces.',
   quickLinksTitle: 'Quick Links',
   quickLinks: [
-    { label: 'Home', href: '/' }, { label: 'Products', href: '/products' },
-    { label: 'Solutions', href: '/solutions' }, { label: 'Brands', href: '/brands' },
+    { label: 'Home', href: '/' },
+    { label: 'Products', href: '/products' },
+    { label: 'Solutions', href: '/solutions' },
+    { label: 'Brands', href: '/brands' },
     { label: 'Contact', href: '/contact' },
   ],
   servicesTitle: 'Services',
   serviceLinks: [
-    { label: 'Projects', href: '/projects' }, { label: 'Services & AMC', href: '/services' },
-    { label: 'About Us', href: '/about' }, { label: 'Contact', href: '/contact' },
+    { label: 'Projects', href: '/projects' },
+    { label: 'Services & AMC', href: '/services' },
+    { label: 'About Us', href: '/about' },
+    { label: 'Contact', href: '/contact' },
   ],
   ...contactDefaults,
   copyrightText: 'Intam Solutions. All rights reserved.',
@@ -51,7 +55,9 @@ const validateFooterContent = (content) => {
     ['ctaContactHref', content.ctaContactHref],
     ['phoneHref', content.phoneHref],
     ['emailHref', content.emailHref],
-  ]) assertSafeHref(href, name);
+  ]) {
+    assertSafeHref(href, name);
+  }
 
   if (content.whatsappHref && !WHATSAPP_HREF_RE.test(content.whatsappHref)) {
     fail('whatsappHref must be a WhatsApp link in the format https://wa.me/<international-number>.');

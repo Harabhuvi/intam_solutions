@@ -2,7 +2,7 @@ const Product = require('../../models/Product');
 const Category = require('../../models/Category');
 const cache = require('../../config/redis');
 const { buildProductFilter, paginateWithCursor } = require('../../utils/queryHelpers');
-const { fail, requireAuthenticatedAdmin, wrapResolvers } = require('../resolverUtils');
+const { fail, requireAuthenticatedAdmin, wrapResolvers } = require('./resolverUtils');
 
 module.exports = wrapResolvers({
   Product: {
@@ -12,13 +12,14 @@ module.exports = wrapResolvers({
     id: (category) => String(category._id || category.id),
   },
   Query: {
-    products: () => Product.find().sort({ createdAt: -1, _id: -1 }).lean(),
+    products: () => Product.find().sort({ createdAt: -1, _id: -1 }).limit(100).lean(),
     productsConnection: (_, { category, search, after, limit }) => {
       const filter = buildProductFilter({ category, search });
       return paginateWithCursor(Product, filter, { cursor: after, limit });
     },
     product: (_, { id }) => Product.findById(id).lean(),
-    productsByCategory: (_, { category }) => Product.find({ category }).sort({ createdAt: -1, _id: -1 }).lean(),
+    productsByCategory: (_, { category }) =>
+      Product.find({ category }).sort({ createdAt: -1, _id: -1 }).limit(100).lean(),
     categories: async () => {
       const { data } = await cache.getOrSet('dashboard:categories', 300, () =>
         Category.find().sort({ name: 1 }).lean()
@@ -38,7 +39,8 @@ module.exports = wrapResolvers({
     updateProduct: async (_, { id, ...updates }, { admin }) => {
       requireAuthenticatedAdmin(admin);
       const product = await Product.findByIdAndUpdate(id, updates, {
-        new: true, runValidators: true,
+        new: true,
+        runValidators: true,
       });
       if (!product) fail('Product not found.', 'NOT_FOUND');
       await cache.del('dashboard:summary');

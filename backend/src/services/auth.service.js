@@ -1,17 +1,24 @@
 const jwt = require('jsonwebtoken');
+const { jwtSecret } = require('../config/env');
 
+/**
+ * Generates a signed JWT for an authenticated admin.
+ */
 const generateToken = (admin) =>
   jwt.sign(
     { id: admin._id, email: admin.email, role: admin.role },
-    process.env.JWT_SECRET,
+    jwtSecret,
     { expiresIn: '7d' }
   );
 
+/**
+ * Extracts and verifies the admin payload from a Bearer Authorization header.
+ */
 const getAdminFromToken = (req) => {
   const auth = req?.headers?.authorization || '';
   if (!auth.startsWith('Bearer ')) return null;
   try {
-    return jwt.verify(auth.slice(7), process.env.JWT_SECRET);
+    return jwt.verify(auth.slice(7), jwtSecret);
   } catch {
     return null;
   }

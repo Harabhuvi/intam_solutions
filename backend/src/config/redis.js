@@ -115,8 +115,10 @@ const delByPrefix = async (prefix) => {
   }
   if (redisReady && redisClient) {
     try {
-      const keys = await redisClient.keys(`${prefix}*`);
-      if (keys.length > 0) await redisClient.del(...keys);
+      const stream = redisClient.scanStream({ match: `${prefix}*`, count: 100 });
+      for await (const keys of stream) {
+        if (keys.length > 0) await redisClient.unlink(...keys);
+      }
     } catch {
       // ignore
     }

@@ -16,6 +16,8 @@ const productSchema = new mongoose.Schema(
 productSchema.index({ category: 1, createdAt: -1, _id: -1 });
 productSchema.index({ createdAt: -1, _id: -1 });
 productSchema.index({ inStock: 1, category: 1, createdAt: -1 });
+productSchema.index({ name: 1 }, { collation: { locale: 'en', strength: 2 } });
+productSchema.index({ brand: 1 }, { collation: { locale: 'en', strength: 2 } });
 productSchema.index({ name: 'text', brand: 'text', description: 'text' }, { name: 'product_text' });
 
 module.exports = mongoose.model('Product', productSchema);

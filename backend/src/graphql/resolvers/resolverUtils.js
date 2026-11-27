@@ -1,5 +1,5 @@
 const { GraphQLError } = require('graphql');
-const { requireAdmin } = require('../config/auth');
+const { requireAdmin } = require('../../services/auth.service');
 
 const fail = (message, code = 'BAD_USER_INPUT') => {
   throw new GraphQLError(message, { extensions: { code } });
@@ -26,20 +26,23 @@ const normalizeDatabaseError = (error) => {
   return error;
 };
 
-const wrapResolvers = (resolverMap) => Object.fromEntries(
-  Object.entries(resolverMap).map(([typeName, fields]) => [
-    typeName,
-    Object.fromEntries(Object.entries(fields).map(([fieldName, resolver]) => [
-      fieldName,
-      async (...args) => {
-        try {
-          return await resolver(...args);
-        } catch (error) {
-          throw normalizeDatabaseError(error);
-        }
-      },
-    ])),
-  ])
-);
+const wrapResolvers = (resolverMap) =>
+  Object.fromEntries(
+    Object.entries(resolverMap).map(([typeName, fields]) => [
+      typeName,
+      Object.fromEntries(
+        Object.entries(fields).map(([fieldName, resolver]) => [
+          fieldName,
+          async (...args) => {
+            try {
+              return await resolver(...args);
+            } catch (error) {
+              throw normalizeDatabaseError(error);
+            }
+          },
+        ])
+      ),
+    ])
+  );
 
 module.exports = { fail, requireAuthenticatedAdmin, wrapResolvers };

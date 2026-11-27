@@ -47,6 +47,10 @@ const mergeConditions = (...conditions) => {
   return { $and: valid };
 };
 
+const CASE_INSENSITIVE_COLLATION = { locale: 'en', strength: 2 };
+
+const buildPrefixRange = (term) => ({ $gte: term, $lt: `${term}\uffff` });
+
 const buildProductFilter = ({ category, search, inStock } = {}) => {
   const filter = {};
   if (category && category !== 'all') filter.category = category;
@@ -54,10 +58,10 @@ const buildProductFilter = ({ category, search, inStock } = {}) => {
 
   const term = search?.trim();
   if (term) {
-    const isShort = term.length < 3;
-    if (isShort) {
-      const prefix = new RegExp(`^${escapeRegExp(term)}`, 'i');
-      filter.$or = [{ name: prefix }, { brand: prefix }];
+    if (term.length < 3) {
+      // Uses case-insensitive B-tree collation indexes on name/brand: O(log n)
+      const range = buildPrefixRange(term);
+      filter.$or = [{ name: range }, { brand: range }];
     } else {
       filter.$text = { $search: term };
     }
@@ -73,8 +77,9 @@ const buildEnquiryFilter = ({ status, search } = {}) => {
   if (term) {
     const isPhoneOrShort = term.length < 4 || /^\+?\d[\d\s-]*$/.test(term);
     if (isPhoneOrShort) {
-      const prefix = new RegExp(`^${escapeRegExp(term)}`, 'i');
-      filter.$or = [{ name: prefix }, { email: prefix }, { phone: prefix }];
+      // Uses case-insensitive B-tree collation indexes on name/email/phone: O(log n)
+      const range = buildPrefixRange(term);
+      filter.$or = [{ name: range }, { email: range }, { phone: range }];
     } else {
       filter.$text = { $search: term };
     }
@@ -88,6 +93,7 @@ const paginateWithCursor = async (Model, baseFilter, { cursor, limit = 20, selec
   const queryFilter = mergeConditions(baseFilter, cursorCond);
 
   let query = Model.find(queryFilter);
+  if (baseFilter?.$or) query = query.collation(CASE_INSENSITIVE_COLLATION);
   if (select) query = query.select(select);
 
   const docs = await query

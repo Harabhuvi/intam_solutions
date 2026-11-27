@@ -1,6 +1,5 @@
 const nodemailer = require('nodemailer');
-
-const { whatsappHref: businessWhatsappHref } = require('./whatsapp');
+const { whatsappHref: businessWhatsappHref } = require('../config/env');
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -19,13 +18,11 @@ const sendEnquiryNotification = async ({ name, email, phone, message }) => {
     subject: `📩 New Enquiry from ${name} – Intam Solutions`,
     html: `
       <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;border:1px solid #e5e7eb;border-radius:10px;overflow:hidden;">
-        <!-- Header -->
         <div style="background:linear-gradient(135deg,#1e3a8a,#2563eb);padding:24px 28px;">
           <h2 style="color:#fff;margin:0;font-size:20px;">🛡️ New Customer Enquiry</h2>
           <p style="color:#bfdbfe;margin:4px 0 0;font-size:13px;">Intam Solutions – Smart Security & Automation</p>
         </div>
 
-        <!-- Body -->
         <div style="padding:24px 28px;background:#fff;">
           <table style="width:100%;border-collapse:collapse;font-size:14px;">
             <tr>
@@ -46,20 +43,18 @@ const sendEnquiryNotification = async ({ name, email, phone, message }) => {
             </tr>
           </table>
 
-          <!-- CTA buttons -->
           <div style="margin-top:24px;display:flex;gap:12px;flex-wrap:wrap;">
             <a href="mailto:${email}"
                style="background:#2563eb;color:#fff;padding:10px 20px;border-radius:6px;text-decoration:none;font-weight:700;font-size:13px;">
               📧 Reply via Email
             </a>
-            ${phone ? `<a href="https://wa.me/${phone.replace(/\D/g,'')}"
+            ${phone ? `<a href="https://wa.me/${phone.replace(/\D/g, '')}"
                style="background:#25d366;color:#fff;padding:10px 20px;border-radius:6px;text-decoration:none;font-weight:700;font-size:13px;">
               💬 WhatsApp
             </a>` : ''}
           </div>
         </div>
 
-        <!-- Footer -->
         <div style="background:#f9fafb;padding:14px 28px;border-top:1px solid #e5e7eb;font-size:12px;color:#9ca3af;">
           This email was sent automatically from the Intam Solutions website contact form.<br/>
           Received: ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })} IST
@@ -90,9 +85,7 @@ const sendCustomerAutoReply = async ({ name, email }) => {
             Thank you for reaching out to <strong>Intam Solutions</strong>. We have received your enquiry
             and our team will get back to you within <strong>24 hours</strong>.
           </p>
-          <p>
-            In the meantime, feel free to reach us directly:
-          </p>
+          <p>In the meantime, feel free to reach us directly:</p>
           <ul style="padding-left:18px;">
             <li>📞 <a href="tel:+919845012345" style="color:#2563eb;">+91 98450 12345</a></li>
             ${businessWhatsappHref ? `<li>💬 <a href="${businessWhatsappHref}" style="color:#2563eb;">WhatsApp Us</a></li>` : ''}

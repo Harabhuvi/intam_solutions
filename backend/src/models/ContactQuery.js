@@ -17,6 +17,9 @@ const contactQuerySchema = new mongoose.Schema(
 
 contactQuerySchema.index({ status: 1, createdAt: -1, _id: -1 });
 contactQuerySchema.index({ createdAt: -1, _id: -1 });
+contactQuerySchema.index({ name: 1 }, { collation: { locale: 'en', strength: 2 } });
+contactQuerySchema.index({ email: 1 }, { collation: { locale: 'en', strength: 2 } });
+contactQuerySchema.index({ phone: 1 }, { collation: { locale: 'en', strength: 2 } });
 contactQuerySchema.index(
   { name: 'text', email: 'text', phone: 'text', message: 'text' },
   { name: 'contactquery_text' }

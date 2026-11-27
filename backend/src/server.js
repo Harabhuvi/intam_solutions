@@ -1,92 +1,48 @@
-require('dotenv').config();
-const express    = require('express');
-const cors       = require('cors');
-const { ApolloServer }     = require('@apollo/server');
-const { expressMiddleware } = require('@apollo/server/express4');
-const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const env = require('./config/env');
+const connectDB = require('./config/db');
+const seedAdmin = require('./seeds/seedAdmin');
+const { createApp } = require('./app');
 
-const connectDB   = require('./config/db');
-const seedAdmin   = require('./config/seedAdmin');
-const typeDefs    = require('./schema/typeDefs');
-const resolvers   = require('./resolvers/resolvers');
-const { getAdminFromToken } = require('./config/auth');
-const FooterContent = require('./models/FooterContent');
-const { requireAdmin } = require('./config/auth');
-const { whatsappHref } = require('./config/whatsapp');
-const restRouter  = require('./rest');
+const SHUTDOWN_TIMEOUT_MS = 10_000;
 
 const startServer = async () => {
   await connectDB();
   await seedAdmin();
 
-  const app = express();
-
-  const server = new ApolloServer({ typeDefs, resolvers });
-  await server.start();
-
-  app.use(cors({
-    origin: function (origin, callback) {
-      if (!origin) return callback(null, true);
-      const allowed = [
-        /\.vercel\.app$/,
-        /\.onrender\.com$/,
-        /^https?:\/\/localhost/,
-      ];
-      if (allowed.some((re) => re.test(origin))) return callback(null, true);
-      if (process.env.CLIENT_URL && origin === process.env.CLIENT_URL) return callback(null, true);
-      callback(null, true);
-    },
-    credentials: true,
-  }));
-  app.use(bodyParser.json());
-  app.use('/api', restRouter);
-  app.get('/api/settings/whatsapp', async (_req, res, next) => {
-    try {
-      const settings = await FooterContent.findOne({ key: 'main' }).select('whatsappLabel whatsappHref').lean();
-      res.set('Cache-Control', 'public, max-age=60');
-      res.json({
-        label: settings?.whatsappLabel || 'WhatsApp',
-        href: settings?.whatsappHref || whatsappHref,
-      });
-    } catch (error) { next(error); }
+  const { app, apolloServer } = await createApp();
+  const httpServer = app.listen(env.port, () => {
+    console.log(`🚀 Server: http://localhost:${env.port}/graphql`);
   });
 
-  app.put('/api/admin/settings/whatsapp', async (req, res) => {
+  let shuttingDown = false;
+  const shutdown = async (signal) => {
+    if (shuttingDown) return;
+    shuttingDown = true;
+    console.log(`${signal} received, shutting down...`);
+
+    setTimeout(() => process.exit(1), SHUTDOWN_TIMEOUT_MS).unref();
+
     try {
-      const admin = getAdminFromToken(req);
-      requireAdmin(admin);
-      const { label, phone } = req.body || {};
-      const normalizedPhone = String(phone || '').replace(/\D/g, '');
-      if (!label?.trim() || !/^\d{8,15}$/.test(normalizedPhone)) {
-        return res.status(400).json({ error: 'Provide a label and an international phone number with 8–15 digits.' });
-      }
-      const settings = await FooterContent.findOneAndUpdate(
-        { key: 'main' },
-        { $set: { whatsappLabel: label.trim(), whatsappHref: `https://wa.me/${normalizedPhone}` }, $setOnInsert: { key: 'main' } },
-        { new: true, upsert: true, runValidators: true }
-      ).select('whatsappLabel whatsappHref').lean();
-      res.set('Cache-Control', 'no-store');
-      res.json({ label: settings.whatsappLabel, href: settings.whatsappHref });
+      await new Promise((resolve) => httpServer.close(resolve));
+      await apolloServer.stop();
+      await mongoose.connection.close();
+      process.exit(0);
     } catch (error) {
-      const unauthorized = error.message?.startsWith('UNAUTHORIZED:');
-      res.status(unauthorized ? 401 : 500).json({ error: unauthorized ? 'Admin login required.' : 'Could not update WhatsApp settings.' });
+      console.error('Error during shutdown:', error);
+      process.exit(1);
     }
-  });
+  };
 
-  app.use(
-    '/graphql',
-    expressMiddleware(server, {
-      context: async ({ req }) => ({
-        req,
-        admin: getAdminFromToken(req),
-      }),
-    })
-  );
-
-  const PORT = process.env.PORT;
-  app.listen(PORT, () => {
-    console.log(`🚀 Server: http://localhost:${PORT}/graphql`);
-  });
+  process.on('SIGTERM', () => shutdown('SIGTERM'));
+  process.on('SIGINT', () => shutdown('SIGINT'));
 };
 
-startServer();
+process.on('unhandledRejection', (reason) => {
+  console.error('Unhandled rejection:', reason);
+});
+
+startServer().catch((error) => {
+  console.error('Failed to start server:', error);
+  process.exit(1);
+});
