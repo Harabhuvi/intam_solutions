@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useQuery } from '@apollo/client';
-import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
-import { GET_CATEGORIES } from '../../graphql/queries';
+import { ArrowRight } from 'lucide-react';
+import { GET_CATEGORIES, GET_PRODUCTS } from '../../graphql/queries';
 import '../style/ProductCategories.css';
 
 const FALLBACK_CATEGORIES = [];
@@ -15,8 +15,20 @@ const getRelativeOffset = (index, active, total) => {
 
 const ProductCategories = () => {
   const { loading, error, data } = useQuery(GET_CATEGORIES);
+  const { data: prodData } = useQuery(GET_PRODUCTS);
   const categories =
     data?.categories?.length > 0 ? data.categories : FALLBACK_CATEGORIES;
+
+  const productImagesByCategory = useMemo(() => {
+    const map = new Map();
+    for (const product of prodData?.products || []) {
+      const key = product.category?.trim().toLowerCase();
+      if (!key || !product.image) continue;
+      if (!map.has(key)) map.set(key, []);
+      map.get(key).push(product.image);
+    }
+    return map;
+  }, [prodData]);
 
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -74,6 +86,43 @@ const ProductCategories = () => {
                 if (!isVisible) return null;
 
                 const cardClass = `cat-slide cat-slide--pos-${offset}`;
+                const dynamicImages =
+                  productImagesByCategory.get(cat.slug?.toLowerCase()) ||
+                  productImagesByCategory.get(cat.name?.toLowerCase()) ||
+                  [];
+                const dynamicProductImage =
+                  dynamicImages.length > 0 ? dynamicImages[active % dynamicImages.length] : null;
+                const cardImage = dynamicProductImage || cat.image || null;
+
+                const cardInner = (
+                  <>
+                    <div className="cat-slide__media">
+                      {cardImage ? (
+                        <img
+                          src={cardImage}
+                          alt={cat.name}
+                          loading="lazy"
+                          onError={(e) => {
+                            if (cat.image && e.currentTarget.src !== cat.image) {
+                              e.currentTarget.src = cat.image;
+                            }
+                          }}
+                        />
+                      ) : (
+                        <div className="cat-slide__placeholder" aria-hidden="true">
+                          <span>{cat.icon || '◈'}</span>
+                          <small>SECURITY SYSTEMS</small>
+                        </div>
+                      )}
+                    </div>
+                    <div className="cat-slide__overlay">
+                      <span className="cat-slide__name">{cat.name}</span>
+                      <span className="cat-slide__circle" aria-hidden="true">
+                        <ArrowRight size={isCenter ? 15 : 14} strokeWidth={2.2} />
+                      </span>
+                    </div>
+                  </>
+                );
 
                 if (isCenter) {
                   return (
@@ -83,22 +132,7 @@ const ProductCategories = () => {
                       className={cardClass}
                       aria-label={cat.name}
                     >
-                      <div className="cat-slide__media">
-                        {cat.image ? (
-                          <img src={cat.image} alt={cat.name} loading="lazy" />
-                        ) : (
-                          <div className="cat-slide__placeholder" aria-hidden="true">
-                            <span>{cat.icon || '◈'}</span>
-                            <small>SECURITY SYSTEMS</small>
-                          </div>
-                        )}
-                      </div>
-                      <div className="cat-slide__overlay">
-                        <span className="cat-slide__name">{cat.name}</span>
-                        <span className="cat-slide__circle" aria-hidden="true">
-                          <ArrowRight size={15} strokeWidth={2.2} />
-                        </span>
-                      </div>
+                      {cardInner}
                     </a>
                   );
                 }
@@ -111,22 +145,7 @@ const ProductCategories = () => {
                     onClick={() => setActive(index)}
                     aria-label={`View ${cat.name}`}
                   >
-                    <div className="cat-slide__media">
-                      {cat.image ? (
-                        <img src={cat.image} alt={cat.name} loading="lazy" />
-                      ) : (
-                        <div className="cat-slide__placeholder" aria-hidden="true">
-                          <span>{cat.icon || '◈'}</span>
-                          <small>SECURITY SYSTEMS</small>
-                        </div>
-                      )}
-                    </div>
-                    <div className="cat-slide__overlay">
-                      <span className="cat-slide__name">{cat.name}</span>
-                      <span className="cat-slide__circle" aria-hidden="true">
-                        <ArrowRight size={14} strokeWidth={2.2} />
-                      </span>
-                    </div>
+                    {cardInner}
                   </button>
                 );
               })}
