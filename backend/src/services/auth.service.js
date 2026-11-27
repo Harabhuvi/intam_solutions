@@ -25,4 +25,8 @@ const getAdminFromToken = (req) => {
   }
 };
 
-module.exports = { hashPassword, verifyPassword, generateToken, getAdminFromToken };
+const requireAdmin = (admin) => {
+  if (!admin) throw new Error('UNAUTHORIZED: Admin login required');
+};
+
+module.exports = { hashPassword, verifyPassword, generateToken, getAdminFromToken, requireAdmin };
