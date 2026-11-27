@@ -33,6 +33,7 @@ const createApp = async () => {
   await apolloServer.start();
 
   app.use(cors(corsOptions));
+  app.options('*', cors(corsOptions));
   app.use(express.json({ limit: '100kb' }));
 
   app.get('/health', (_req, res) => res.json({ status: 'ok' }));
