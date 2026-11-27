@@ -1,14 +1,14 @@
 const mongoose = require('mongoose');
 const env = require('./config/env');
 const connectDB = require('./config/db');
-const seedAdmin = require('./seeds/seedAdmin');
+// const seedAdmin = require('./seeds/seedAdmin');
 const { createApp } = require('./app');
 
 const SHUTDOWN_TIMEOUT_MS = 10_000;
 
 const startServer = async () => {
   await connectDB();
-  await seedAdmin();
+  // await seedAdmin();
 
   const { app, apolloServer } = await createApp();
   const httpServer = app.listen(env.port, () => {

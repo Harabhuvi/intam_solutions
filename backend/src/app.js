@@ -8,7 +8,7 @@ const corsOptions = require('./config/cors');
 const { getAdminFromToken } = require('./services/auth.service');
 const { graphqlLimiter } = require('./middleware/rateLimiter');
 const { notFound, errorHandler } = require('./middleware/errorHandler');
-const typeDefs = require('./graphql/typeDefs');
+const typeDefs = require('./graphql/schema/typeDefs');
 const resolvers = require('./graphql/resolvers');
 const apiRoutes = require('./routes');
 

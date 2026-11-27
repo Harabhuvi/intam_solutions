@@ -1,8 +1,6 @@
 const { getAdminFromToken } = require('../services/auth.service');
 
-/**
- * Express middleware that requires a valid admin JWT on REST routes.
- */
+
 const authenticate = (req, res, next) => {
   try {
     const admin = getAdminFromToken(req);
