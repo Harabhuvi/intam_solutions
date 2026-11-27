@@ -1,10 +1,11 @@
 ﻿
 
 .header {
-  position: absolute;  
-  inset: 0 0 auto;
-  z-index: 20;
+  position: relative;
+  z-index: 10;
+  padding-top: 1px;
   background: transparent;
+  box-shadow: none;
 }
 .header--overlay { position:absolute; inset:0 0 auto; z-index:20; background:transparent; }
 
