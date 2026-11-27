@@ -1,9 +1,26 @@
-﻿import { gql } from '@apollo/client';
+import { gql } from '@apollo/client';
 
 export const GET_CATEGORIES = gql`
   query GetCategories {
     categories { id name slug description image icon }
   }
+`;
+export const ADD_CATEGORY = gql`
+  mutation AddCategory($name: String!, $slug: String!, $description: String, $image: String, $icon: String) {
+    addCategory(name: $name, slug: $slug, description: $description, image: $image, icon: $icon) {
+      id name slug description image icon
+    }
+  }
+`;
+export const UPDATE_CATEGORY = gql`
+  mutation UpdateCategory($id: ID!, $name: String!, $slug: String!, $description: String, $image: String, $icon: String) {
+    updateCategory(id: $id, name: $name, slug: $slug, description: $description, image: $image, icon: $icon) {
+      id name slug description image icon
+    }
+  }
+`;
+export const DELETE_CATEGORY = gql`
+  mutation DeleteCategory($id: ID!) { deleteCategory(id: $id) }
 `;
 export const GET_FOOTER_CONTENT = gql`
   query GetFooterContent {

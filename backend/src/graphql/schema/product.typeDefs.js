@@ -67,6 +67,17 @@ const productTypeDefs = gql`
       image: String
       icon: String
     ): Category!
+
+    updateCategory(
+      id: ID!
+      name: String!
+      slug: String!
+      description: String
+      image: String
+      icon: String
+    ): Category!
+
+    deleteCategory(id: ID!): Boolean!
   }
 `;
 

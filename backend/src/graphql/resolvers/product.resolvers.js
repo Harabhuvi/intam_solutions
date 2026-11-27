@@ -57,9 +57,40 @@ module.exports = wrapResolvers({
 
     addCategory: async (_, args, { admin }) => {
       requireAuthenticatedAdmin(admin);
-      const saved = await new Category(args).save();
+      const slug = (args.slug || args.name || '')
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+      const saved = await new Category({ ...args, slug }).save();
       await cache.del('dashboard:categories', 'dashboard:summary');
       return saved;
+    },
+
+    updateCategory: async (_, { id, ...updates }, { admin }) => {
+      requireAuthenticatedAdmin(admin);
+      if (updates.slug) {
+        updates.slug = updates.slug
+          .toLowerCase()
+          .trim()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-+|-+$/g, '');
+      }
+      const category = await Category.findByIdAndUpdate(id, updates, {
+        new: true,
+        runValidators: true,
+      });
+      if (!category) fail('Category not found.', 'NOT_FOUND');
+      await cache.del('dashboard:categories', 'dashboard:summary');
+      return category;
+    },
+
+    deleteCategory: async (_, { id }, { admin }) => {
+      requireAuthenticatedAdmin(admin);
+      const category = await Category.findByIdAndDelete(id);
+      if (!category) fail('Category not found.', 'NOT_FOUND');
+      await cache.del('dashboard:categories', 'dashboard:summary');
+      return true;
     },
   },
 });

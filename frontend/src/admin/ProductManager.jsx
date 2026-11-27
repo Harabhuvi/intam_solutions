@@ -1,8 +1,25 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
-import { ADD_PRODUCT, DELETE_PRODUCT, GET_CATEGORIES, GET_PRODUCTS, UPDATE_PRODUCT } from '../graphql/queries';
+import {
+  ADD_CATEGORY,
+  ADD_PRODUCT,
+  DELETE_CATEGORY,
+  DELETE_PRODUCT,
+  GET_CATEGORIES,
+  GET_PRODUCTS,
+  UPDATE_CATEGORY,
+  UPDATE_PRODUCT,
+} from '../graphql/queries';
 
 const emptyProduct = { name: '', description: '', category: '', image: '', brand: '', price: '', inStock: true };
+const emptyCategory = { name: '', slug: '', description: '', image: '', icon: '' };
+
+const slugify = (value) =>
+  value
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
 
 export default function ProductManager() {
   const { data, loading, error } = useQuery(GET_PRODUCTS);
@@ -10,17 +27,30 @@ export default function ProductManager() {
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(emptyProduct);
   const [message, setMessage] = useState('');
+  const [catOpen, setCatOpen] = useState(false);
+  const [editingCat, setEditingCat] = useState(null);
+  const [catForm, setCatForm] = useState(emptyCategory);
+  const [catMessage, setCatMessage] = useState('');
   const refresh = [{ query: GET_PRODUCTS }];
+  const refreshCats = [{ query: GET_CATEGORIES }];
   const [addProduct, { loading: adding }] = useMutation(ADD_PRODUCT, { refetchQueries: refresh, onCompleted: () => finish('Product added.') });
   const [updateProduct, { loading: updating }] = useMutation(UPDATE_PRODUCT, { refetchQueries: refresh, onCompleted: () => finish('Product updated.') });
   const [deleteProduct] = useMutation(DELETE_PRODUCT, { refetchQueries: refresh, onCompleted: () => setMessage('Product deleted.') });
+  const [addCategory, { loading: addingCat }] = useMutation(ADD_CATEGORY, { refetchQueries: refreshCats, onCompleted: () => finishCat('Category added.') });
+  const [updateCategory, { loading: updatingCat }] = useMutation(UPDATE_CATEGORY, { refetchQueries: refreshCats, onCompleted: () => finishCat('Category updated.') });
+  const [deleteCategory] = useMutation(DELETE_CATEGORY, { refetchQueries: refreshCats, onCompleted: () => setCatMessage('Category deleted.') });
   const products = data?.products || [];
   const categories = categoryData?.categories || [];
 
   function finish(text) { setMessage(text); setEditing(null); setForm(emptyProduct); }
+  function finishCat(text) { setCatMessage(text); setEditingCat(null); setCatForm(emptyCategory); }
   function beginEdit(product) {
     setMessage(''); setEditing(product.id);
     setForm({ name: product.name, description: product.description || '', category: product.category, image: product.image || '', brand: product.brand || '', price: product.price ?? '', inStock: product.inStock !== false });
+  }
+  function beginEditCat(cat) {
+    setCatMessage(''); setEditingCat(cat.id); setCatOpen(true);
+    setCatForm({ name: cat.name, slug: cat.slug, description: cat.description || '', image: cat.image || '', icon: cat.icon || '' });
   }
   function submit(event) {
     event.preventDefault(); setMessage('');
@@ -28,14 +58,77 @@ export default function ProductManager() {
     const action = editing ? updateProduct({ variables: { id: editing, ...input } }) : addProduct({ variables: input });
     action.catch((e) => setMessage(e.message));
   }
+  function submitCat(event) {
+    event.preventDefault(); setCatMessage('');
+    const slug = slugify(catForm.slug || catForm.name);
+    if (!slug) { setCatMessage('Please provide a valid category name or slug.'); return; }
+    const input = { ...catForm, slug };
+    const action = editingCat
+      ? updateCategory({ variables: { id: editingCat, ...input } })
+      : addCategory({ variables: input });
+    action.catch((e) => setCatMessage(e.message));
+  }
   function remove(product) {
     if (window.confirm(`Delete “${product.name}”? This cannot be undone.`)) {
       deleteProduct({ variables: { id: product.id } }).catch((e) => setMessage(e.message));
     }
   }
+  function removeCat(cat) {
+    if (window.confirm(`Delete category “${cat.name}”? Products in this category will still keep their slug.`)) {
+      deleteCategory({ variables: { id: cat.id } }).catch((e) => setCatMessage(e.message));
+    }
+  }
 
   return <section className="product-admin">
-    <div className="product-admin__header"><div><h2>Products</h2><p>Add, edit, and remove products shown on the website.</p></div><button className="product-admin__primary" onClick={() => { setEditing(null); setForm({ ...emptyProduct, category: categories[0]?.slug || '' }); setMessage(''); }}>+ Add Product</button></div>
+    <div className="product-admin__header">
+      <div><h2>Products</h2><p>Add, edit, and remove products and categories shown on the website.</p></div>
+      <div className="product-admin__form-actions">
+        <button type="button" className="product-admin__secondary" onClick={() => { setCatOpen((v) => !v); setCatMessage(''); }}>
+          {catOpen ? 'Hide Categories' : `Manage Categories (${categories.length})`}
+        </button>
+        <button className="product-admin__primary" onClick={() => { setEditing(null); setForm({ ...emptyProduct, category: categories[0]?.slug || '' }); setMessage(''); }}>+ Add Product</button>
+      </div>
+    </div>
+
+    {catOpen && (
+      <div className="product-admin__form" style={{ marginBottom: '1.5rem' }}>
+        <h3>{editingCat ? 'Edit category' : 'Manage Categories'}</h3>
+        {catMessage && <p className="product-admin__message" role="status">{catMessage}</p>}
+        <form onSubmit={submitCat}>
+          <div className="product-admin__fields">
+            <label>Category name<input required value={catForm.name} onChange={e => setCatForm({ ...catForm, name: e.target.value, slug: editingCat ? catForm.slug : slugify(e.target.value) })} /></label>
+            <label>Slug<input required value={catForm.slug} onChange={e => setCatForm({ ...catForm, slug: slugify(e.target.value) })} /></label>
+            <label>Icon<input placeholder="e.g. 📷" value={catForm.icon} onChange={e => setCatForm({ ...catForm, icon: e.target.value })} /></label>
+            <label>Image URL<input type="url" placeholder="https://…" value={catForm.image} onChange={e => setCatForm({ ...catForm, image: e.target.value })} /></label>
+            <label className="product-admin__wide">Description<textarea rows="2" value={catForm.description} onChange={e => setCatForm({ ...catForm, description: e.target.value })} /></label>
+          </div>
+          <div className="product-admin__form-actions">
+            <button className="product-admin__primary" disabled={addingCat || updatingCat}>{addingCat || updatingCat ? 'Saving…' : editingCat ? 'Save category' : '+ Add category'}</button>
+            {editingCat && <button type="button" className="product-admin__secondary" onClick={() => { setEditingCat(null); setCatForm(emptyCategory); }}>Cancel edit</button>}
+          </div>
+        </form>
+        {categories.length > 0 && (
+          <div className="product-admin__table-wrap" style={{ marginTop: '1rem' }}>
+            <table className="product-admin__table">
+              <thead><tr><th>Name</th><th>Slug</th><th>Description</th><th>Actions</th></tr></thead>
+              <tbody>
+                {categories.map((cat) => (
+                  <tr key={cat.id}>
+                    <td><strong>{cat.icon ? `${cat.icon} ` : ''}{cat.name}</strong></td>
+                    <td><code>{cat.slug}</code></td>
+                    <td>{cat.description || '—'}</td>
+                    <td className="product-admin__actions">
+                      <button type="button" onClick={() => beginEditCat(cat)}>Edit</button>
+                      <button type="button" className="product-admin__delete" onClick={() => removeCat(cat)}>Delete</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    )}
     {message && <p className="product-admin__message" role="status">{message}</p>}
     {(editing !== null || form.name === '' && message === '') && form.category && <form className="product-admin__form" onSubmit={submit}>
       <h3>{editing ? 'Edit product' : 'Add a product'}</h3>

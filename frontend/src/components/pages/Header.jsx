@@ -1,21 +1,27 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Search, Menu, X, ChevronDown } from 'lucide-react';
+import { useQuery } from '@apollo/client';
+import { Search, Menu, X, ChevronDown } from 'lucide-react';
+import { GET_CATEGORIES, GET_PRODUCTS } from '../../graphql/queries';
 import { useProductSearch } from '../../graphql/useProductSearch';
 import useWhatsappSettings from '../../hooks/useWhatsappSettings';
 
 import '../style/Header.css';
 
-const navLinks = [
+const baseNavLinks = [
   {
     label: 'Products',
     href: '/products',
-    children: ['CCTV', 'Access Control', 'Fire Alarm', 'Networking'],
+    dynamicCategories: true,
   },
   {
     label: 'Solutions',
     href: '/solutions',
-    children: ['Residential', 'Commercial', 'Industrial'],
+    children: [
+      { label: 'Residential', href: '/solutions/residential' },
+      { label: 'Commercial', href: '/solutions/commercial' },
+      { label: 'Industrial', href: '/solutions/industrial' },
+    ],
   },
   { label: 'Brands', href: '/brands' },
   { label: 'Projects', href: '/projects' },
@@ -133,6 +139,33 @@ const Header = ({ overlay = false }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
   const { href: whatsappHref, label: whatsappLabel } = useWhatsappSettings();
+  const { data: catData } = useQuery(GET_CATEGORIES);
+  const { data: prodData } = useQuery(GET_PRODUCTS);
+
+  const activeCategoryKeys = useMemo(() => {
+    const keys = new Set();
+    for (const product of prodData?.products || []) {
+      const key = product.category?.trim().toLowerCase();
+      if (key) keys.add(key);
+    }
+    return keys;
+  }, [prodData]);
+
+  const dynamicCategoryLinks = (catData?.categories || [])
+    .filter((cat) =>
+      activeCategoryKeys.has(cat.slug?.toLowerCase()) ||
+      activeCategoryKeys.has(cat.name?.toLowerCase())
+    )
+    .map((cat) => ({
+      label: cat.name,
+      href: `/products/${cat.slug}`,
+    }));
+
+  const navLinks = baseNavLinks.map((link) =>
+    link.dynamicCategories
+      ? { ...link, children: dynamicCategoryLinks.length > 0 ? dynamicCategoryLinks : null }
+      : link
+  );
 
   return (
     <header className={`header ${overlay ? 'header--overlay' : ''}`}>
@@ -179,8 +212,8 @@ const Header = ({ overlay = false }) => {
                   {link.children && openDropdown === link.label && (
                     <ul className="header__dropdown">
                       {link.children.map((child) => (
-                        <li key={child} className="header__dropdown-item">
-                          <a href={`${link.href}/${child.toLowerCase().replace(/ /g, '-')}`}>{child}</a>
+                        <li key={child.href} className="header__dropdown-item">
+                          <a href={child.href}>{child.label}</a>
                         </li>
                       ))}
                     </ul>

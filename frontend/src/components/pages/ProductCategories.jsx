@@ -16,8 +16,24 @@ const getRelativeOffset = (index, active, total) => {
 const ProductCategories = () => {
   const { loading, error, data } = useQuery(GET_CATEGORIES);
   const { data: prodData } = useQuery(GET_PRODUCTS);
-  const categories =
-    data?.categories?.length > 0 ? data.categories : FALLBACK_CATEGORIES;
+
+  const activeCategoryKeys = useMemo(() => {
+    const keys = new Set();
+    for (const product of prodData?.products || []) {
+      const key = product.category?.trim().toLowerCase();
+      if (key) keys.add(key);
+    }
+    return keys;
+  }, [prodData]);
+
+  const categories = useMemo(() => {
+    const all = data?.categories?.length > 0 ? data.categories : FALLBACK_CATEGORIES;
+    if (!prodData?.products) return all;
+    return all.filter((cat) =>
+      activeCategoryKeys.has(cat.slug?.toLowerCase()) ||
+      activeCategoryKeys.has(cat.name?.toLowerCase())
+    );
+  }, [data, prodData, activeCategoryKeys]);
 
   const productImagesByCategory = useMemo(() => {
     const map = new Map();
@@ -66,7 +82,7 @@ const ProductCategories = () => {
         </div>
 
         {loading && <p className="prod-cats__status">Loading categories…</p>}
-        {error && <p className="prod-cats__status prod-cats__status--warn">⚠ Showing default categories.</p>}
+        {error && <p className="prod-cats__status prod-cats__status--warn">⚠ Could not load categories.</p>}
 
         {total > 0 && (
           <div
